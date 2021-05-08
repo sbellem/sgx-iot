@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  aesm:
+    image: initc3/linux-sgx:2.13-ubuntu20.04
+    devices:
+      - /dev/isgx
+    volumes:
+      - aesmd-socket:/var/run/aesmd
+      #- ./aesmd.conf:/etc/aesmd.conf
+    user: aesmd
+    #stdin_open: true
+    #tty: true
+    working_dir: /opt/intel/sgx-aesm-service/aesm
+    environment:
+      LD_LIBRARY_PATH: /opt/intel/sgx-aesm-service/aesm
+    command: ./aesm_service --no-daemon
+
+  sgxiot:
+    image: sgx_iot
+    build:
+      context: .
+      dockerfile: Dockerfile
+      #args:
+      #  SGX_MODE: hw
+      #  SGX_DEBUG: 0
+    depends_on:
+      - aesm
+    devices:
+      - /dev/isgx
+    volumes:
+      - aesmd-socket:/var/run/aesmd
+    command: ./run_demo_sgx.sh
+
+volumes:
+  aesmd-socket:
+    driver: local
+    driver_opts:
+      type: "tmpfs"
+      device: "tmpfs"
+      o: "rw"
