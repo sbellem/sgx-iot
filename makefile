@@ -12,6 +12,12 @@ all:
 	$(MAKE) $(MFLAGS) -C enclave SGX_MODE=$(SGX_MODE) $(MAKECMDGOALS)
 	$(MAKE) $(MFLAGS) -C app SGX_MODE=$(SGX_MODE) $(MAKECMDGOALS)
 
+enclave.signed.so:
+	$(MAKE) $(MFLAGS) -C enclave SGX_MODE=$(SGX_MODE)
+
+just-app:
+	$(MAKE) $(MFLAGS) -C app SGX_MODE=$(SGX_MODE)
+
 clean:
 	$(MAKE) $(MFLAGS) -C enclave SGX_MODE=$(SGX_MODE) $(MAKECMDGOALS)
 	$(MAKE) $(MFLAGS) -C app SGX_MODE=$(SGX_MODE) $(MAKECMDGOALS)

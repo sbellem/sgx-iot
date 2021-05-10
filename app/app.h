@@ -7,12 +7,14 @@
 #ifndef _APP_H
 #define _APP_H
 
-#include <sys/types.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <sys/types.h>
 
-#include <sgx_urts.h>
 #include <openssl/bn.h>
-
+#include <sgx_quote.h>
+#include <sgx_uae_epid.h>
+#include <sgx_urts.h>
 
 /* Globals */
 
@@ -30,12 +32,11 @@ extern size_t signature_buffer_size;
 extern void *input_buffer;
 extern size_t input_buffer_size;
 
-
 /* Function prototypes */
 
-const char * decode_sgx_status(sgx_status_t status);
+const char *decode_sgx_status(sgx_status_t status);
 
-FILE* open_file(const char* const filename, const char* const mode);
+FILE *open_file(const char *const filename, const char *const mode);
 
 bool create_enclave(const char *const enclave_binary);
 
@@ -43,7 +44,8 @@ bool enclave_get_buffer_sizes(void);
 
 bool allocate_buffers(void);
 
-bool read_file_into_memory(const char *const filename, void **buffer, size_t *buffer_size);
+bool read_file_into_memory(const char *const filename, void **buffer,
+                           size_t *buffer_size);
 
 bool load_enclave_state(const char *const statefile);
 
@@ -53,9 +55,11 @@ bool enclave_sign_data(void);
 
 bool enclave_generate_key(void);
 
+bool enclave_generate_quote(sgx_report_data_t report_data);
+
 bool save_enclave_state(const char *const statefile);
 
-BIGNUM* bignum_from_little_endian_bytes_32(const unsigned char * const bytes);
+BIGNUM *bignum_from_little_endian_bytes_32(const unsigned char *const bytes);
 
 bool save_signature(const char *const signature_file);
 
@@ -64,5 +68,15 @@ bool save_public_key(const char *const public_key_file);
 void destroy_enclave(void);
 
 void cleanup_buffers(void);
+
+// base64
+char *base64_encode(const char *msg, size_t sz);
+char *base64_decode(const char *msg, size_t *sz);
+
+// hexutils
+int from_hexstring(unsigned char *dest, const void *src, size_t len);
+void print_hexstring(FILE *fp, const void *src, size_t len);
+void print_hexstring_nl(FILE *fp, const void *src, size_t len);
+const char *hexstring(const void *src, size_t len);
 
 #endif /* !_APP_H */
