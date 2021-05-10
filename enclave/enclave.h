@@ -7,12 +7,14 @@
 #ifndef _ENCLAVE_H_
 #define _ENCLAVE_H_
 
-#include <stdlib.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #include <sgx_tcrypto.h>
-#include <sgx_utils.h>
+//#include <sgx_tkey_exchange.h>
+#include <sgx_quote.h>
 #include <sgx_tseal.h>
+#include <sgx_utils.h>
 
 #if defined(__cplusplus)
 extern "C" {

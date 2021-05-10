@@ -28,6 +28,9 @@ services:
       - aesm
     devices:
       - /dev/isgx
+    environment:
+      SGX_SPID: ${SGX_SPID}
+      IAS_PRIMARY_KEY: ${IAS_PRIMARY_KEY}
     volumes:
       - aesmd-socket:/var/run/aesmd
     command: ./run_demo_sgx.sh
