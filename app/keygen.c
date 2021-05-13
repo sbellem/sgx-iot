@@ -89,6 +89,41 @@ bool save_public_key(const char *const public_key_file) {
         ret_status = false;
     }
 
+    /* experiment */
+    // printf("PEM key: %s\n", key);
+    int len;
+    unsigned char *buf = NULL;
+    // buf = NULL;
+    len = i2d_EC_PUBKEY(key, &buf);
+    if (len < 0) {
+        fprintf(stderr, "[GatewayApp]: Failed DER encoding public key\n");
+    }
+    // printf("DER encoded pub key: %s\n", buf);
+    printf("\n\n--------------------------------------\n");
+    printf("DER encoded pub key: ");
+    print_hexstring(stdout, &buf, sizeof(buf));
+
+    sgx_report_data_t report_data = {{0}};
+    len = i2d_EC_PUBKEY(key, (unsigned char *)&report_data);
+    if (len < 0) {
+        fprintf(stderr, "[GatewayApp]: Failed DER encoding public key\n");
+    }
+    // printf("DER encoded pub key: %s\n", report_data);
+    printf("\nDER encoded pub key (in sgx_report_data_t): ");
+    print_hexstring(stdout, &report_data, sizeof(sgx_report_data_t));
+
+    unsigned char *buf2 = NULL;
+    // buf = NULL;
+    len = i2d_EC_PUBKEY(key, &buf2);
+    if (len < 0) {
+        fprintf(stderr, "[GatewayApp]: Failed DER encoding public key\n");
+    }
+    // printf("DER encoded pub key: %s\n", buf);
+    printf("\nDER encoded pub key: ");
+    print_hexstring(stdout, &buf2, sizeof(buf2));
+    printf("\n--------------------------------------\n\n");
+    /* -- experiment */
+
     EC_KEY_free(key);
     key = NULL;
 
@@ -98,24 +133,107 @@ bool save_public_key(const char *const public_key_file) {
 }
 
 // For REMOTE ATTESTATION
-// TODO get quote and generate report, with public key in report data
-bool enclave_generate_report() {
+// TODO get report and generate quote, with public key in report data
+bool enclave_generate_quote() {
+    sgx_status_t ecall_retval = SGX_ERROR_UNEXPECTED;
     printf("[GatewayApp]: Calling enclave to generate attestation report\n");
+    printf("[GatewayApp]: SPID: %s\n", getenv("SGX_SPID"));
+    sgx_spid_t spid;
+    from_hexstring((unsigned char *)&spid, (unsigned char *)getenv("SGX_SPID"),
+                   16);
+    // print_hexstring(stdout, &spid, 16);
 
     /*
-     * Invoke ECALL, 'ecall_key_gen_and_seal()', to generate an attestation
+     * Invoke ECALL, 'ecall_report_gen()', to generate an attestation
      * report with the public key in the report data.
      */
+    sgx_status_t status;
+    sgx_report_t report;
+    sgx_target_info_t target_info;
+    sgx_epid_group_id_t epid_gid;
+    sgx_quote_t *quote;
+    uint32_t sz = 0;
+    sgx_quote_sign_type_t linkable = SGX_UNLINKABLE_SIGNATURE;
+
+    // init quote
+    printf("[GatewayApp]: Quote init phase ...\n");
+    memset(&report, 0, sizeof(report));
+    status = sgx_init_quote(&target_info, &epid_gid);
+    if (status != SGX_SUCCESS) {
+        fprintf(stderr, "[GatewayApp]: sgx_init_quote: %08x\n", status);
+        return 1;
+        // return (sgx_lasterr == SGX_SUCCESS);
+    }
+
+    // Invoke ECALL, 'ecall_report_gen()', to generate an attestation report
+    printf("[GatewayApp]: ECALL - Report generation phase ...\n");
     sgx_lasterr =
-        ecall_report_ge(enclave_id, &ecall_retval, (char *)public_key_buffer,
-                        public_key_buffer_size, (char *)sealed_data_buffer,
-                        sealed_data_buffer_size);
+        ecall_report_gen(enclave_id, &ecall_retval, &report, &target_info);
     if (sgx_lasterr == SGX_SUCCESS && (ecall_retval != SGX_SUCCESS)) {
-        fprintf(stderr,
-                "[GatewayApp]: ERROR: ecall_key_gen_and_seal returned %d\n",
+        fprintf(stderr, "[GatewayApp]: ERROR: ecall_report_gen returned %d\n",
                 ecall_retval);
         sgx_lasterr = SGX_ERROR_UNEXPECTED;
     }
+
+    // calculate quote size
+    printf("[GatewayApp]: Call sgx_calc_quote_size() ...\n");
+    status = sgx_calc_quote_size(NULL, 0, &sz);
+    if (status != SGX_SUCCESS) {
+        fprintf(stderr, "SGX error while getting quote size: %08x\n", status);
+        return 1;
+    }
+
+    quote = (sgx_quote_t *)malloc(sz);
+    if (quote == NULL) {
+        fprintf(stderr, "out of memory\n");
+        return 1;
+    }
+    memset(quote, 0, sz);
+
+    // get quote
+    printf("[GatewayApp]: Call sgx_get_quote() ...\n");
+    status =
+        sgx_get_quote(&report, linkable, &spid, NULL, NULL, 0, NULL, quote, sz);
+    fprintf(stdout, "[GatewayApp]: status of sgx_get_quote(): %08x\n", status);
+    printf("[GatewayApp]: status of sgx_get_quote(): %s\n",
+           status == SGX_SUCCESS ? "success" : "error");
+    if (status != SGX_SUCCESS) {
+        fprintf(stderr, "[GatewayApp]: sgx_get_quote: %08x\n", status);
+        return 1;
+    }
+
+    printf("\n[GatewayApp]: MRENCLAVE: \t");
+    print_hexstring(stdout, &quote->report_body.mr_enclave,
+                    sizeof(sgx_measurement_t));
+    printf("\n[GatewayApp]: MRSIGNER: \t");
+    print_hexstring(stdout, &quote->report_body.mr_signer,
+                    sizeof(sgx_measurement_t));
+    printf("\n[GatewayApp]: Report Data: \t");
+    print_hexstring(stdout, &quote->report_body.report_data,
+                    sizeof(sgx_report_data_t));
+    printf("\n\n");
+
+    char *b64quote = NULL;
+    b64quote = base64_encode((char *)quote, sz);
+    if (b64quote == NULL) {
+        printf("Could not base64 encode quote\n");
+        return 1;
+    }
+
+    printf("Quote, ready to be sent to IAS (POST /attestation/v4/report):\n");
+    printf("{\n");
+    printf("\t\"isvEnclaveQuote\":\"%s\"", b64quote);
+    // if (OPT_ISSET(flags, OPT_NONCE)) {
+    //    printf(",\n\t\"nonce\":\"");
+    //    print_hexstring(stdout, &config->nonce, 16);
+    //    printf("\"");
+    //}
+
+    printf("\n}\n\n");
+    printf(
+        "See "
+        "https://api.trustedservices.intel.com/documents/"
+        "sgx-attestation-api-spec.pdf\n");
 
     return (sgx_lasterr == SGX_SUCCESS);
 }

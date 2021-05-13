@@ -99,10 +99,10 @@ int main(int argc, char **argv) {
         (opt_sign ? enclave_sign_data() : true) &&
         save_enclave_state(opt_statefile) &&
         (opt_sign ? save_signature(opt_signature_file) : true) &&
-        // (opt_keygen ? save_public_key(opt_public_key_file) : true) &&
+        (opt_keygen ? save_public_key(opt_public_key_file) : true) &&
         // TODO call function to generate report with public key in it
-        //(opt_keygen ? enclave_generate_report(opt_public_key_file) : true);
-        (opt_keygen ? save_public_key(opt_public_key_file) : true);
+        (opt_keygen ? enclave_generate_quote() : true);
+    //(opt_keygen ? save_public_key(opt_public_key_file) : true);
 
     if (sgx_lasterr != SGX_SUCCESS) {
         fprintf(stderr, "[GatewayApp]: ERROR: %s\n",
