@@ -52,6 +52,14 @@ static bool convert_sgx_key_to_openssl_key(EC_KEY *key,
     BIGNUM *bn_x = bignum_from_little_endian_bytes_32(key_buffer);
     BIGNUM *bn_y = bignum_from_little_endian_bytes_32(key_buffer + 32);
 
+    FILE *fpx = open_file("bn_x", "wt");
+    BN_print_fp(fpx, bn_x);
+    FILE *fpy = open_file("bn_y", "wt");
+    BN_print_fp(fpy, bn_y);
+
+    printf("bn_x: %s\n", BN_bn2dec(bn_x));
+    printf("bn_y: %s\n", BN_bn2dec(bn_y));
+
     if (1 != EC_KEY_set_public_key_affine_coordinates(key, bn_x, bn_y)) {
         fprintf(
             stderr,

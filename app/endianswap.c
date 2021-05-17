@@ -15,7 +15,9 @@
  * Intel(r) SGX uses little endian format.
  */
 #if !defined(SWAP_ENDIAN_DW)
-#define SWAP_ENDIAN_DW(dw) ((((dw)&0x000000ff) << 24) | (((dw)&0x0000ff00) << 8) | (((dw)&0x00ff0000) >> 8) | (((dw)&0xff000000) >> 24))
+#define SWAP_ENDIAN_DW(dw)                                  \
+    ((((dw)&0x000000ff) << 24) | (((dw)&0x0000ff00) << 8) | \
+     (((dw)&0x00ff0000) >> 8) | (((dw)&0xff000000) >> 24))
 #endif
 
 #if !defined(SWAP_ENDIAN_32B)
@@ -37,17 +39,15 @@
     }
 #endif
 
-BIGNUM* bignum_from_little_endian_bytes_32(const uint8_t * const bytes)
-{
+BIGNUM *bignum_from_little_endian_bytes_32(const uint8_t *const bytes) {
     /* Create BIGNUM from raw (little endian) bytes
        without using memcpy (static scanner requirement) */
     uint8_t copied_bytes[32];
-    for (size_t i = 0 ; i < sizeof(copied_bytes) ; ++i)
-    {
+    for (size_t i = 0; i < sizeof(copied_bytes); ++i) {
         copied_bytes[i] = bytes[i];
     }
 
     SWAP_ENDIAN_8X32B(copied_bytes);
-    BIGNUM * bn = BN_bin2bn(copied_bytes, sizeof(copied_bytes), NULL);
+    BIGNUM *bn = BN_bin2bn(copied_bytes, sizeof(copied_bytes), NULL);
     return bn;
 }
