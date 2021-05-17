@@ -82,27 +82,28 @@ cleanup:
 }
 
 sgx_status_t ecall_report_gen(sgx_report_t *report,
-                              sgx_target_info_t *target_info) {
+                              sgx_target_info_t *target_info,
+                              sgx_report_data_t report_data) {
     //#ifdef SGX_HW_SIM
     //  return sgx_create_report(NULL, NULL, report);
     //#else
-    sgx_report_data_t report_data = {{0}};
+    // sgx_report_data_t report_data = {{0}};
 
     // Hardcoded "Hello World!" string in hexadecimal format
-    const uint8_t x[] = {0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20,
-                         0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21};
-    int iterations = 10;
-    sgx_status_t sha_ret;
-    sgx_sha256_hash_t tmp_hash;
-    sha_ret = sgx_sha256_msg(x, sizeof(x), (sgx_sha256_hash_t *)tmp_hash);
+    // const uint8_t x[] = {0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20,
+    //                     0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21};
+    // int iterations = 10;
+    // sgx_status_t sha_ret;
+    // sgx_sha256_hash_t tmp_hash;
+    // sha_ret = sgx_sha256_msg(x, sizeof(x), (sgx_sha256_hash_t *)tmp_hash);
 
-    for (int i = 1; i < iterations - 1; i++) {
-        sha_ret = sgx_sha256_msg((const uint8_t *)&tmp_hash, sizeof(tmp_hash),
-                                 (sgx_sha256_hash_t *)tmp_hash);
-    }
+    // for (int i = 1; i < iterations - 1; i++) {
+    //    sha_ret = sgx_sha256_msg((const uint8_t *)&tmp_hash, sizeof(tmp_hash),
+    //                             (sgx_sha256_hash_t *)tmp_hash);
+    //}
 
-    sha_ret = sgx_sha256_msg((const uint8_t *)&tmp_hash, sizeof(tmp_hash),
-                             (sgx_sha256_hash_t *)&report_data);
+    // sha_ret = sgx_sha256_msg((const uint8_t *)&tmp_hash, sizeof(tmp_hash),
+    //                         (sgx_sha256_hash_t *)&report_data);
 
     return sgx_create_report(target_info, &report_data, report);
     //#endif

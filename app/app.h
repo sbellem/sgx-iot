@@ -55,7 +55,7 @@ bool enclave_sign_data(void);
 
 bool enclave_generate_key(void);
 
-bool enclave_generate_quote(void);
+bool enclave_generate_quote(sgx_report_data_t report_data);
 
 bool save_enclave_state(const char *const statefile);
 

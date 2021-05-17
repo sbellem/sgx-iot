@@ -89,19 +89,19 @@ bool save_public_key(const char *const public_key_file) {
         ret_status = false;
     }
 
-    /* experiment */
+    /* ----- ----- ----- ----- experiment ----- ----- ----- ----- */
     // printf("PEM key: %s\n", key);
     int len;
     unsigned char *buf = NULL;
     // buf = NULL;
-    len = i2d_EC_PUBKEY(key, &buf);
-    if (len < 0) {
-        fprintf(stderr, "[GatewayApp]: Failed DER encoding public key\n");
-    }
-    // printf("DER encoded pub key: %s\n", buf);
-    printf("\n\n--------------------------------------\n");
-    printf("DER encoded pub key: ");
-    print_hexstring(stdout, &buf, sizeof(buf));
+    // len = i2d_EC_PUBKEY(key, &buf);
+    // if (len < 0) {
+    //    fprintf(stderr, "[GatewayApp]: Failed DER encoding public key\n");
+    //}
+    //// printf("DER encoded pub key: %s\n", buf);
+    // printf("\n\n--------------------------------------\n");
+    // printf("DER encoded pub key: ");
+    // print_hexstring(stdout, &buf, sizeof(buf));
 
     sgx_report_data_t report_data = {{0}};
     len = i2d_EC_PUBKEY(key, (unsigned char *)&report_data);
@@ -111,18 +111,19 @@ bool save_public_key(const char *const public_key_file) {
     // printf("DER encoded pub key: %s\n", report_data);
     printf("\nDER encoded pub key (in sgx_report_data_t): ");
     print_hexstring(stdout, &report_data, sizeof(sgx_report_data_t));
+    ret_status = enclave_generate_quote(report_data);
 
-    unsigned char *buf2 = NULL;
-    // buf = NULL;
-    len = i2d_EC_PUBKEY(key, &buf2);
-    if (len < 0) {
-        fprintf(stderr, "[GatewayApp]: Failed DER encoding public key\n");
-    }
-    // printf("DER encoded pub key: %s\n", buf);
-    printf("\nDER encoded pub key: ");
-    print_hexstring(stdout, &buf2, sizeof(buf2));
-    printf("\n--------------------------------------\n\n");
-    /* -- experiment */
+    // unsigned char *buf2 = NULL;
+    //// buf = NULL;
+    // len = i2d_EC_PUBKEY(key, &buf2);
+    // if (len < 0) {
+    //    fprintf(stderr, "[GatewayApp]: Failed DER encoding public key\n");
+    //}
+    //// printf("DER encoded pub key: %s\n", buf);
+    // printf("\nDER encoded pub key: ");
+    // print_hexstring(stdout, &buf2, sizeof(buf2));
+    // printf("\n--------------------------------------\n\n");
+    /* ----- ----- ----- ----- experiment ----- ----- ----- ----- */
 
     EC_KEY_free(key);
     key = NULL;
@@ -134,7 +135,7 @@ bool save_public_key(const char *const public_key_file) {
 
 // For REMOTE ATTESTATION
 // TODO get report and generate quote, with public key in report data
-bool enclave_generate_quote() {
+bool enclave_generate_quote(sgx_report_data_t report_data) {
     sgx_status_t ecall_retval = SGX_ERROR_UNEXPECTED;
     printf("[GatewayApp]: Calling enclave to generate attestation report\n");
     printf("[GatewayApp]: SPID: %s\n", getenv("SGX_SPID"));
@@ -167,8 +168,8 @@ bool enclave_generate_quote() {
 
     // Invoke ECALL, 'ecall_report_gen()', to generate an attestation report
     printf("[GatewayApp]: ECALL - Report generation phase ...\n");
-    sgx_lasterr =
-        ecall_report_gen(enclave_id, &ecall_retval, &report, &target_info);
+    sgx_lasterr = ecall_report_gen(enclave_id, &ecall_retval, &report,
+                                   &target_info, report_data);
     if (sgx_lasterr == SGX_SUCCESS && (ecall_retval != SGX_SUCCESS)) {
         fprintf(stderr, "[GatewayApp]: ERROR: ecall_report_gen returned %d\n",
                 ecall_retval);
