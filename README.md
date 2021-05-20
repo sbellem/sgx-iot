@@ -107,6 +107,12 @@ Set the `SGX_SPID` environment variable:
 $ export SGX_SPID=<your-SPID>
 ```
 
+To interact with IAS, set your primary key:
+
+```console
+$ export IAS_PRIMARY_KEY=<your-ias-primary-key>
+```
+
 start a container:
 
 ```console
@@ -210,7 +216,7 @@ To send the quote over to Intel, you need your API primary subscription key:
 ```python
 headers = {
     'Content-Type': 'application/json',
-    'Ocp-Apim-Subscription-Key': 'your-ias-primary-subscription-key',
+    'Ocp-Apim-Subscription-Key': os.environ["IAS_PRIMARY_KEY"],
 }
 ```
 
