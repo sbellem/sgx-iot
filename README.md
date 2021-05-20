@@ -125,7 +125,7 @@ run the demo:
 ./run_demo_sgx.sh
 ```
 
-```console
+```shell
 Provisioning private elliptic curve key:
 [GatewayApp]: Creating enclave
 [GatewayApp]: Querying enclave for buffer sizes
