@@ -104,19 +104,19 @@ To generate a quote to send to Intel, the hardware mode is also needed.
 Set the `SGX_SPID` environment variable:
 
 ```console
-$ export SGX_SPID=<your-SPID>
+export SGX_SPID=<your-SPID>
 ```
 
 To interact with IAS, set your primary key:
 
 ```console
-$ export IAS_PRIMARY_KEY=<your-ias-primary-key>
+export IAS_PRIMARY_KEY=<your-ias-primary-key>
 ```
 
 start a container:
 
 ```console
-$ docker-compose run --rm sgxiot bash
+docker-compose run --rm sgxiot bash
 ```
 
 run the demo:
