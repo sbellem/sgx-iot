@@ -52,13 +52,43 @@ static bool convert_sgx_key_to_openssl_key(EC_KEY *key,
     BIGNUM *bn_x = bignum_from_little_endian_bytes_32(key_buffer);
     BIGNUM *bn_y = bignum_from_little_endian_bytes_32(key_buffer + 32);
 
+    /* ----- ----- ----- ----- experiment ----- ----- ----- ----- */
     FILE *fpx = open_file("bn_x", "wt");
     BN_print_fp(fpx, bn_x);
     FILE *fpy = open_file("bn_y", "wt");
     BN_print_fp(fpy, bn_y);
 
-    printf("bn_x: %s\n", BN_bn2dec(bn_x));
-    printf("bn_y: %s\n", BN_bn2dec(bn_y));
+    printf("\nbn_x: %s\n", BN_bn2dec(bn_x));
+    printf("bn_y: %s\n\n", BN_bn2dec(bn_y));
+    printf("\nbn_x: %s\n", BN_bn2hex(bn_x));
+    printf("bn_y: %s\n\n", BN_bn2hex(bn_y));
+
+    sgx_report_data_t report_data = {{0}};
+    unsigned char buf_x[32];
+    int len_bn_x = BN_bn2bin(bn_x, buf_x);
+    printf("len_bn_x: %d\n", len_bn_x);
+    unsigned char buf_y[32];
+    int len_bn_y = BN_bn2bin(bn_y, buf_y);
+    printf("len_bn_y: %d\n", len_bn_y);
+    unsigned char buf[64];
+    memcpy(buf, buf_x, sizeof(buf_x));
+    memcpy(buf + 32, buf_y, sizeof(buf_y));
+    memcpy((unsigned char *)&report_data, buf, sizeof(buf));
+
+    // unsigned char buf64[64] = {0};
+    // int num_bytes = BN_bn2binpad(bn_x, buf64, 64);
+    // printf("num_bytes: %d\n", num_bytes);
+
+    // sgx_report_data_t report_data = {{0}};
+    // len = i2d_EC_PUBKEY(key, (unsigned char *)&report_data);
+    // if (len < 0) {
+    //    fprintf(stderr, "[GatewayApp]: Failed DER encoding public key\n");
+    //}
+    // printf("DER encoded pub key: %s\n", report_data);
+    // printf("\nDER encoded pub key (in sgx_report_data_t): ");
+    // print_hexstring(stdout, &report_data, sizeof(sgx_report_data_t));
+    ret_status = enclave_generate_quote(report_data);
+    /* ----- ----- ----- ----- experiment ----- ----- ----- ----- */
 
     if (1 != EC_KEY_set_public_key_affine_coordinates(key, bn_x, bn_y)) {
         fprintf(
@@ -99,8 +129,8 @@ bool save_public_key(const char *const public_key_file) {
 
     /* ----- ----- ----- ----- experiment ----- ----- ----- ----- */
     // printf("PEM key: %s\n", key);
-    int len;
-    unsigned char *buf = NULL;
+    // int len;
+    // unsigned char *buf = NULL;
     // buf = NULL;
     // len = i2d_EC_PUBKEY(key, &buf);
     // if (len < 0) {
@@ -111,15 +141,15 @@ bool save_public_key(const char *const public_key_file) {
     // printf("DER encoded pub key: ");
     // print_hexstring(stdout, &buf, sizeof(buf));
 
-    sgx_report_data_t report_data = {{0}};
-    len = i2d_EC_PUBKEY(key, (unsigned char *)&report_data);
-    if (len < 0) {
-        fprintf(stderr, "[GatewayApp]: Failed DER encoding public key\n");
-    }
-    // printf("DER encoded pub key: %s\n", report_data);
-    printf("\nDER encoded pub key (in sgx_report_data_t): ");
-    print_hexstring(stdout, &report_data, sizeof(sgx_report_data_t));
-    ret_status = enclave_generate_quote(report_data);
+    // sgx_report_data_t report_data = {{0}};
+    // len = i2d_EC_PUBKEY(key, (unsigned char *)&report_data);
+    // if (len < 0) {
+    //    fprintf(stderr, "[GatewayApp]: Failed DER encoding public key\n");
+    //}
+    //// printf("DER encoded pub key: %s\n", report_data);
+    // printf("\nDER encoded pub key (in sgx_report_data_t): ");
+    // print_hexstring(stdout, &report_data, sizeof(sgx_report_data_t));
+    // ret_status = enclave_generate_quote(report_data);
 
     // unsigned char *buf2 = NULL;
     //// buf = NULL;
