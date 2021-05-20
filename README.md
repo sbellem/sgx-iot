@@ -103,25 +103,25 @@ To generate a quote to send to Intel, the hardware mode is also needed.
 
 Set the `SGX_SPID` environment variable:
 
-```console
+```shell
 export SGX_SPID=<your-SPID>
 ```
 
 To interact with IAS, set your primary key:
 
-```console
+```shell
 export IAS_PRIMARY_KEY=<your-ias-primary-key>
 ```
 
 start a container:
 
-```console
+```shell
 docker-compose run --rm sgxiot bash
 ```
 
 run the demo:
 
-```console
+```shell
 ./run_demo_sgx.sh
 Provisioning private elliptic curve key:
 [GatewayApp]: Creating enclave
@@ -199,7 +199,7 @@ Verified OK
 
 go into an ipython shell:
 
-```console
+```shell
 ipython
 ```
 
