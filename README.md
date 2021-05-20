@@ -214,6 +214,8 @@ quote = {
 To send the quote over to Intel, you need your API primary subscription key:
 
 ```python
+import os
+
 headers = {
     'Content-Type': 'application/json',
     'Ocp-Apim-Subscription-Key': os.environ["IAS_PRIMARY_KEY"],
