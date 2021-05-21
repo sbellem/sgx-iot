@@ -94,6 +94,8 @@ pubkey = ec.EllipticCurvePublicKey.from_encoded_point(curve=ec.SECP256R1(), data
 Check that it matches the PEM data file:
 
 ```python
->>> pubkey.public_bytes(encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo) == pem_data.encode()
-True
+from cryptography.hazmat.primitives import serialization
+
+pubkey.public_bytes(encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo) == pem_data.encode()
+# True
 ```
