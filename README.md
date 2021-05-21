@@ -20,6 +20,7 @@ attestation report.
 
 
 ## Quickstart
+
 ### Set Environment Variables
 Before starting a container, set the two following environment variables:
 
@@ -289,7 +290,23 @@ pem_from_report_data == pem_file_data.encode()
 # True
 ```
 
+### Verify the Signed Data
+```python
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import ec
 
+with open('demo_sgx/Sensor_Data.signature', 'rb') as f:
+    signature = f.read()
+
+with open('Sensor_Data') as f:
+    sensor_data = f.read()
+
+pubkey.verify(
+    signature,
+    sensor_data.encode(),
+    signature_algorithm=ec.ECDSA(hashes.SHA256()),
+)
+```
 
 ---
 
