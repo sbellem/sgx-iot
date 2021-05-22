@@ -1,6 +1,19 @@
+FROM initc3/nix-sgx-sdk@sha256:509e4c8e5ab7aeea4d78d2f61df45caa388279036a0c8e984630321d783ea2d3 AS build-enclave
+
+WORKDIR /usr/src
+
+COPY common /usr/src/common
+COPY enclave /usr/src/enclave
+COPY interface /usr/src/interface
+COPY makefile /usr/src/makefile
+
+COPY nix /usr/src/nix
+COPY enclave.nix /usr/src/enclave.nix
+
+RUN nix-build enclave.nix
+
+
 FROM initc3/linux-sgx:2.13-ubuntu20.04
-#FROM initc3/linux-sgx:2.11-ubuntu18.04
-#FROM initc3/linux-sgx:2.7.1-ubuntu18.04
 
 RUN apt-get update && apt-get install -y \
                 autotools-dev \
@@ -59,10 +72,12 @@ ENV LD_LIBRARY_PATH $SGX_SDK/sdk_libs
 
 COPY . .
 
+COPY --from=build-enclave /usr/src/result/bin/enclave.signed.so enclave/enclave.signed.so
+
 ARG SGX_MODE=HW
 ENV SGX_MODE $SGX_MODE
 
 ARG SGX_DEBUG=1
 ENV SGX_DEBUG $SGX_DEBUG
 
-RUN make
+RUN make just-app
