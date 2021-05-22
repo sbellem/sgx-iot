@@ -25,6 +25,10 @@ extern sgx_status_t sgx_lasterr;
 
 extern void *public_key_buffer;       /* unused for signing */
 extern size_t public_key_buffer_size; /* unused for signing */
+// extern void *sealed_pubkey_buffer;       /* unused for signing */
+// extern size_t sealed_pubkey_buffer_size; /* unused for signing */
+// extern void *sealed_privkey_buffer;
+// extern size_t sealed_privkey_buffer_size;
 extern void *sealed_data_buffer;
 extern size_t sealed_data_buffer_size;
 extern void *signature_buffer;
@@ -57,7 +61,10 @@ bool enclave_generate_key(void);
 
 bool enclave_generate_quote(sgx_report_data_t report_data);
 
-bool save_enclave_state(const char *const statefile);
+// bool save_enclave_state(const char *const statefile);
+bool save_enclave_state(const char *const sealedprivkey_file,
+                        const char *const sealedpubkey_file);
+bool save_state(const char *const statefile, void *buffer, size_t buffer_size);
 
 BIGNUM *bignum_from_little_endian_bytes_32(const unsigned char *const bytes);
 

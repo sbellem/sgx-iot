@@ -33,7 +33,9 @@ services:
       IAS_PRIMARY_KEY: ${IAS_PRIMARY_KEY}
     volumes:
       - aesmd-socket:/var/run/aesmd
-    command: ./run_demo_sgx.sh
+      - ./run_keygen.sh:/usr/src/sgxiot/run_keygen.sh
+    #command: ./run_demo_sgx.sh
+    command: ./run_keygen.sh
 
 volumes:
   aesmd-socket:
