@@ -20,7 +20,7 @@ all: ../interface/libenclave_stub_t.a enclave.signed.so
 
 ../interface/libenclave_stub_t.a: ../interface/enclave.edl
 
-enclave.unsigned.so: calcbuffsize.o keygen.o print.o sign.o
+enclave.unsigned.so: calcbuffsize.o keygen.o print.o sign.o quote.o
 
 enclave.signed.so: enclave.key.pem
 
