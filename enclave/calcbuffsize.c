@@ -37,7 +37,7 @@ sgx_status_t ecall_calc_buffer_sizes(  // size_t* epubkey_size,
         sgx_calc_sealed_data_size(0U, sizeof(sgx_ec256_private_t));
     *esignature_size = sizeof(sgx_ec256_signature_t);
     print(
-        "\nTrustedApp: Sizes for public key, sealed private key and signature "
-        "calculated successfully.\n");
+        "\nTrustedApp: Sizes for sealed public key, sealed private key and "
+        "signature calculated successfully.\n");
     return SGX_SUCCESS;
 }

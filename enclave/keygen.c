@@ -121,7 +121,7 @@ sgx_status_t ecall_key_gen_and_seal_all(char *sealedpubkey,
         goto cleanup;
     }
 
-    // Step 3.2: Calculate sealed private key data size.
+    // Step 3.2: Calculate sealed public key data size.
     if (sealedpubkey_size >= sgx_calc_sealed_data_size(0U, sizeof(p_public))) {
         if ((ret = sgx_seal_data(
                  0U, NULL, sizeof(p_public), (uint8_t *)&p_public,

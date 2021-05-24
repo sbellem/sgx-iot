@@ -24,7 +24,8 @@ bool enclave_generate_key() {
      * Invoke ECALL, 'ecall_key_gen_and_seal()', to generate a keypair and seal
      * it to the enclave.
      */
-    sgx_lasterr = ecall_key_gen_and_seal(
+    // sgx_lasterr = ecall_key_gen_and_seal(
+    sgx_lasterr = ecall_key_gen_and_seal_all(
         enclave_id, &ecall_retval, (char *)sealed_pubkey_buffer,
         sealed_pubkey_buffer_size, (char *)sealed_privkey_buffer,
         sealed_privkey_buffer_size);

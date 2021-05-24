@@ -34,9 +34,9 @@ services:
     volumes:
       - aesmd-socket:/var/run/aesmd
       - ./run_keygen.sh:/usr/src/sgxiot/run_keygen.sh
-      - ./run_quotegen.sh:/usr/src/sgxiot/run_quotegen.sh
+      - ./run_quote.sh:/usr/src/sgxiot/run_quote.sh
     #command: ./run_demo_sgx.sh
-    command: ./run_quotegen.sh
+    command: ./run_quote.sh
 
 volumes:
   aesmd-socket:

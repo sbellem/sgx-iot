@@ -124,7 +124,8 @@ int main(int argc, char **argv) {
         allocate_buffers() && (opt_keygen ? enclave_generate_key() : true) &&
         // quote
         (opt_quote ? load_sealedpubkey(opt_sealedpubkey_file) : true) &&
-        //(opt_quote ? enclave_gen_quote() : true) &&
+        //(opt_quote ? load_enclave_state(opt_sealedpubkey_file) : true) &&
+        (opt_quote ? enclave_gen_quote() : true) &&
         //(opt_quote ? save_quote(opt_quote_file) : true) &&
         // sign
         (opt_sign ? load_enclave_state(opt_sealedprivkey_file) : true) &&

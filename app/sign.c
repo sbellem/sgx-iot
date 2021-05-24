@@ -131,6 +131,8 @@ bool enclave_gen_quote() {
      */
     sgx_lasterr = ecall_unseal_and_quote(enclave_id, &ecall_retval,
                                          (char *)sealed_pubkey_buffer,
+                                         //(char *)sealed_privkey_buffer,
+                                         // sealed_privkey_buffer_size);
                                          sealed_pubkey_buffer_size);
     if (sgx_lasterr == SGX_SUCCESS && (ecall_retval != 0)) {
         fprintf(stderr,
