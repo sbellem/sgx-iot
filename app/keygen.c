@@ -25,9 +25,9 @@ bool enclave_generate_key() {
      * it to the enclave.
      */
     sgx_lasterr = ecall_key_gen_and_seal(
-        enclave_id, &ecall_retval, (char *)public_key_buffer,
-        public_key_buffer_size, (char *)sealed_data_buffer,
-        sealed_data_buffer_size);
+        enclave_id, &ecall_retval, (char *)sealed_pubkey_buffer,
+        sealed_pubkey_buffer_size, (char *)sealed_privkey_buffer,
+        sealed_privkey_buffer_size);
     if (sgx_lasterr == SGX_SUCCESS && (ecall_retval != SGX_SUCCESS)) {
         fprintf(stderr,
                 "[GatewayApp]: ERROR: ecall_key_gen_and_seal returned %d\n",
@@ -103,6 +103,7 @@ static bool convert_sgx_key_to_openssl_key(EC_KEY *key,
     return ret_status;
 }
 
+/*
 bool save_public_key(const char *const public_key_file) {
     bool ret_status = true;
 
@@ -127,42 +128,6 @@ bool save_public_key(const char *const public_key_file) {
         ret_status = false;
     }
 
-    /* ----- ----- ----- ----- experiment ----- ----- ----- ----- */
-    // printf("PEM key: %s\n", key);
-    // int len;
-    // unsigned char *buf = NULL;
-    // buf = NULL;
-    // len = i2d_EC_PUBKEY(key, &buf);
-    // if (len < 0) {
-    //    fprintf(stderr, "[GatewayApp]: Failed DER encoding public key\n");
-    //}
-    //// printf("DER encoded pub key: %s\n", buf);
-    // printf("\n\n--------------------------------------\n");
-    // printf("DER encoded pub key: ");
-    // print_hexstring(stdout, &buf, sizeof(buf));
-
-    // sgx_report_data_t report_data = {{0}};
-    // len = i2d_EC_PUBKEY(key, (unsigned char *)&report_data);
-    // if (len < 0) {
-    //    fprintf(stderr, "[GatewayApp]: Failed DER encoding public key\n");
-    //}
-    //// printf("DER encoded pub key: %s\n", report_data);
-    // printf("\nDER encoded pub key (in sgx_report_data_t): ");
-    // print_hexstring(stdout, &report_data, sizeof(sgx_report_data_t));
-    // ret_status = enclave_generate_quote(report_data);
-
-    // unsigned char *buf2 = NULL;
-    //// buf = NULL;
-    // len = i2d_EC_PUBKEY(key, &buf2);
-    // if (len < 0) {
-    //    fprintf(stderr, "[GatewayApp]: Failed DER encoding public key\n");
-    //}
-    //// printf("DER encoded pub key: %s\n", buf);
-    // printf("\nDER encoded pub key: ");
-    // print_hexstring(stdout, &buf2, sizeof(buf2));
-    // printf("\n--------------------------------------\n\n");
-    /* ----- ----- ----- ----- experiment ----- ----- ----- ----- */
-
     EC_KEY_free(key);
     key = NULL;
 
@@ -170,6 +135,7 @@ bool save_public_key(const char *const public_key_file) {
 
     return ret_status;
 }
+*/
 
 // For REMOTE ATTESTATION
 // TODO get report and generate quote, with public key in report data

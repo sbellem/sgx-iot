@@ -16,8 +16,17 @@ rm -f sealedprivkey.bin sealedpubkey.bin secp256r1.pem Sensor_Data.signature
 echo "Provisioning private elliptic curve key:"
 # Generate the keypair (both private & public keys are sealed to enclave)
 #../app/app --keygen --enclave-path `pwd`/../enclave/enclave.signed.so --statefile sealeddata.bin --public-key secp256r1.pem
-../app/app --keygen --enclave-path `pwd`/../enclave/enclave.signed.so \
+../app/app --keygen \
+    --enclave-path `pwd`/../enclave/enclave.signed.so \
     --sealedprivkey sealedprivkey.bin \
     --sealedpubkey sealedpubkey.bin \
     --public-key secp256r1.pem
 echo "Key provisoning completed.\n"
+
+echo "Generating quote for remote attestation:"
+# Generate the quote
+../app/app --quote \
+    --enclave-path `pwd`/../enclave/enclave.signed.so \
+    --sealedpubkey sealedpubkey.bin \
+    --quotefile quote.json
+echo "Quote generation completed."

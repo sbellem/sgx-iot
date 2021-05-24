@@ -23,7 +23,8 @@ enclave
             size_t sealedprivkey_size);
 
         public sgx_status_t ecall_calc_buffer_sizes(
-            [out] size_t* epubkey_size,
+            //[out] size_t* epubkey_size,
+            [out] size_t* esealedpubkey_size,
             [out] size_t* esealedprivkey_size,
             [out] size_t* esignature_size);
 
@@ -34,6 +35,10 @@ enclave
             size_t sealed_size,
             [out, size=signature_size] char* signature,
             size_t signature_size);
+        
+        public sgx_status_t ecall_unseal_and_quote(
+            [in, size=sealed_size]char *sealed,
+            size_t sealed_size);
 
 		public sgx_status_t ecall_report_gen(
             [out] sgx_report_t *report,

@@ -23,14 +23,16 @@ extern sgx_launch_token_t launch_token;
 extern int launch_token_updated;
 extern sgx_status_t sgx_lasterr;
 
-extern void *public_key_buffer;       /* unused for signing */
-extern size_t public_key_buffer_size; /* unused for signing */
-// extern void *sealed_pubkey_buffer;       /* unused for signing */
-// extern size_t sealed_pubkey_buffer_size; /* unused for signing */
-// extern void *sealed_privkey_buffer;
-// extern size_t sealed_privkey_buffer_size;
-extern void *sealed_data_buffer;
-extern size_t sealed_data_buffer_size;
+// extern void *public_key_buffer;          /* unused for signing */
+// extern size_t public_key_buffer_size;    /* unused for signing */
+extern void *sealed_pubkey_buffer;       /* unused for signing */
+extern size_t sealed_pubkey_buffer_size; /* unused for signing */
+extern void *sealed_privkey_buffer;
+extern size_t sealed_privkey_buffer_size;
+// extern void *sealed_data_buffer;
+// extern size_t sealed_data_buffer_size;
+extern void *quote_buffer;
+extern size_t quote_buffer_size;
 extern void *signature_buffer;
 extern size_t signature_buffer_size;
 extern void *input_buffer;
@@ -53,6 +55,13 @@ bool read_file_into_memory(const char *const filename, void **buffer,
 
 bool load_enclave_state(const char *const statefile);
 
+bool load_sealed_data(const char *const sealed_data_file, void *buffer,
+                      size_t buffer_size);
+
+bool load_sealedprivkey(const char *const sealedprivkey_file);
+
+bool load_sealedpubkey(const char *const sealedpubkey_file);
+
 bool load_input_file(const char *const input_file);
 
 bool enclave_sign_data(void);
@@ -60,6 +69,7 @@ bool enclave_sign_data(void);
 bool enclave_generate_key(void);
 
 bool enclave_generate_quote(sgx_report_data_t report_data);
+bool enclave_gen_quote();
 
 // bool save_enclave_state(const char *const statefile);
 bool save_enclave_state(const char *const sealedprivkey_file,

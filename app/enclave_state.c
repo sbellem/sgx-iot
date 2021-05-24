@@ -20,25 +20,54 @@ bool load_enclave_state(const char *const statefile) {
 
     /* If we previously allocated a buffer, free it before putting new one in
      * its place */
-    if (sealed_data_buffer != NULL) {
-        free(sealed_data_buffer);
-        sealed_data_buffer = NULL;
+    if (sealed_privkey_buffer != NULL) {
+        free(sealed_privkey_buffer);
+        sealed_privkey_buffer = NULL;
     }
 
     /* Put new buffer into context */
-    sealed_data_buffer = new_buffer;
-    sealed_data_buffer_size = new_buffer_size;
+    sealed_privkey_buffer = new_buffer;
+    sealed_privkey_buffer_size = new_buffer_size;
 
+    return ret_status;
+}
+
+bool load_sealed_data(const char *const sealed_data_file, void *buffer,
+                      size_t buffer_size) {
+    void *new_buffer;
+    size_t new_buffer_size;
+
+    bool ret_status =
+        read_file_into_memory(sealed_data_file, &new_buffer, &new_buffer_size);
+
+    /* If we previously allocated a buffer, free it before putting new one in
+     * its place */
+    if (buffer != NULL) {
+        free(buffer);
+        buffer = NULL;
+    }
+
+    /* Put new buffer into context */
+    buffer = new_buffer;
+    buffer_size = new_buffer_size;
+
+    return ret_status;
+}
+
+bool load_sealedpubkey(const char *const sealedpubkey_file) {
+    printf("[GatewayApp]: Loading sealed public key\n");
+    bool ret_status = load_sealed_data(sealedpubkey_file, sealed_pubkey_buffer,
+                                       sealed_pubkey_buffer_size);
     return ret_status;
 }
 
 bool save_enclave_state(const char *const sealedprivkey_file,
                         const char *const sealedpubkey_file) {
     bool ret_status = true;
-    ret_status = save_state(sealedprivkey_file, sealed_data_buffer,
-                            sealed_data_buffer_size);
-    ret_status = save_state(sealedpubkey_file, public_key_buffer,
-                            public_key_buffer_size);
+    ret_status = save_state(sealedprivkey_file, sealed_privkey_buffer,
+                            sealed_privkey_buffer_size);
+    ret_status = save_state(sealedpubkey_file, sealed_pubkey_buffer,
+                            sealed_pubkey_buffer_size);
     return ret_status;
 }
 
