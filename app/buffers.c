@@ -12,14 +12,13 @@
 bool allocate_buffers() {
     printf("[GatewayApp]: Allocating buffers\n");
     sealed_privkey_buffer = calloc(sealed_privkey_buffer_size, 1);
-    // public_key_buffer = calloc(public_key_buffer_size, 1);
+    public_key_buffer = calloc(public_key_buffer_size, 1);
     sealed_pubkey_buffer = calloc(sealed_pubkey_buffer_size, 1);
     signature_buffer = calloc(signature_buffer_size, 1);
     // quote_buffer = calloc(quote_buffer_size, 1);
 
     if (sealed_privkey_buffer == NULL || sealed_pubkey_buffer == NULL ||
-        signature_buffer == NULL) {
-        // public_key_buffer == NULL ||
+        signature_buffer == NULL || public_key_buffer == NULL) {
         // quote_buffer == NULL) {
         fprintf(stderr,
                 "[GatewayApp]: allocate_buffers() memory allocation failure\n");
@@ -42,10 +41,10 @@ void cleanup_buffers() {
         sealed_pubkey_buffer = NULL;
     }
 
-    // if (public_key_buffer != NULL) {
-    //    free(public_key_buffer);
-    //    public_key_buffer = NULL;
-    //}
+    if (public_key_buffer != NULL) {
+        free(public_key_buffer);
+        public_key_buffer = NULL;
+    }
 
     if (signature_buffer != NULL) {
         free(signature_buffer);

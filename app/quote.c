@@ -27,7 +27,8 @@ bool enclave_gen_quote() {
     memset(&report, 0, sizeof(report));
     sgx_lasterr = ecall_unseal_and_quote(
         enclave_id, &ecall_retval, &report, &target_info,
-        (char *)sealed_pubkey_buffer, sealed_pubkey_buffer_size);
+        (char *)sealed_pubkey_buffer, sealed_pubkey_buffer_size,
+        (char *)public_key_buffer, public_key_buffer_size);
 
     if (sgx_lasterr == SGX_SUCCESS && (ecall_retval != 0)) {
         fprintf(stderr,
@@ -35,6 +36,29 @@ bool enclave_gen_quote() {
                 ecall_retval);
         sgx_lasterr = SGX_ERROR_UNEXPECTED;
     }
+
+    // DEBUG Print pub key big endian form
+    /* ----- ----- ----- ----- experiment ----- ----- ----- ----- */
+    if (public_key_buffer_size != 64) {
+        fprintf(stderr,
+                "[GatewayApp]: assertion failed: key_buffer_size == 64\n");
+        return false;
+    }
+    BIGNUM *bn_x =
+        bignum_from_little_endian_bytes_32((uint8_t *)public_key_buffer);
+    BIGNUM *bn_y =
+        bignum_from_little_endian_bytes_32((uint8_t *)public_key_buffer + 32);
+
+    FILE *fpx = open_file("bn_x", "wt");
+    BN_print_fp(fpx, bn_x);
+    FILE *fpy = open_file("bn_y", "wt");
+    BN_print_fp(fpy, bn_y);
+
+    printf("\nbn_x: %s\n", BN_bn2dec(bn_x));
+    printf("bn_y: %s\n\n", BN_bn2dec(bn_y));
+    printf("\nbn_x: %s\n", BN_bn2hex(bn_x));
+    printf("bn_y: %s\n\n", BN_bn2hex(bn_y));
+    /* ----- ----- ----- ----- experiment ----- ----- ----- ----- */
 
     // calculate quote size
     sgx_quote_t *quote;

@@ -23,7 +23,7 @@ enclave
             size_t sealedprivkey_size);
 
         public sgx_status_t ecall_calc_buffer_sizes(
-            //[out] size_t* epubkey_size,
+            [out] size_t* epubkey_size,
             [out] size_t* esealedpubkey_size,
             [out] size_t* esealedprivkey_size,
             [out] size_t* esignature_size);
@@ -40,7 +40,9 @@ enclave
             [out] sgx_report_t *report,
             [in] sgx_target_info_t *target_info,
             [in, size=sealed_size]char *sealed,
-            size_t sealed_size);
+            size_t sealed_size,
+            [out, size=public_key_size] char *public_key,
+            size_t public_key_size);
 
 		public sgx_status_t ecall_report_gen(
             [out] sgx_report_t *report,
@@ -51,5 +53,6 @@ enclave
     untrusted
     {
         void ocall_print_string([in, string] const char *str);
+        //void ocall_print_int([in, int] const int num);
     };
 };

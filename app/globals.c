@@ -13,8 +13,8 @@ sgx_launch_token_t launch_token;
 int launch_token_updated;
 sgx_status_t sgx_lasterr;
 
-// void *public_key_buffer;
-// size_t public_key_buffer_size;
+void *public_key_buffer;
+size_t public_key_buffer_size;
 void *sealed_pubkey_buffer;
 size_t sealed_pubkey_buffer_size;
 void *sealed_privkey_buffer;

@@ -104,7 +104,6 @@ static bool convert_sgx_key_to_openssl_key(EC_KEY *key,
     return ret_status;
 }
 
-/*
 bool save_public_key(const char *const public_key_file) {
     bool ret_status = true;
 
@@ -136,7 +135,6 @@ bool save_public_key(const char *const public_key_file) {
 
     return ret_status;
 }
-*/
 
 // For REMOTE ATTESTATION
 // TODO get report and generate quote, with public key in report data

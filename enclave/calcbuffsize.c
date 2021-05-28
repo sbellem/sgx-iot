@@ -27,10 +27,11 @@
  * some other appropriate sgx_status_t value upon failure.
  */
 
-sgx_status_t ecall_calc_buffer_sizes(  // size_t* epubkey_size,
-    size_t* esealedpubkey_size, size_t* esealedprivkey_size,
-    size_t* esignature_size) {
-    //*epubkey_size = sizeof(sgx_ec256_public_t);
+sgx_status_t ecall_calc_buffer_sizes(size_t* epubkey_size,
+                                     size_t* esealedpubkey_size,
+                                     size_t* esealedprivkey_size,
+                                     size_t* esignature_size) {
+    *epubkey_size = sizeof(sgx_ec256_public_t);
     *esealedpubkey_size =
         sgx_calc_sealed_data_size(0U, sizeof(sgx_ec256_public_t));
     *esealedprivkey_size =
