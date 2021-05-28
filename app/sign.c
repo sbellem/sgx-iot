@@ -120,26 +120,31 @@ cleanup:
 }
 
 // quote.c
-bool enclave_gen_quote() {
-    sgx_status_t ecall_retval = SGX_ERROR_UNEXPECTED;
-
-    printf("[GatewayApp]: Calling enclave to generate quote\n");
-
-    /*
-     * Invoke ECALL, 'ecall_unseal_and_quote()', to generate a quote including
-     * the sealed public key in the report data field.
-     */
-    sgx_lasterr = ecall_unseal_and_quote(enclave_id, &ecall_retval,
-                                         (char *)sealed_pubkey_buffer,
-                                         //(char *)sealed_privkey_buffer,
-                                         // sealed_privkey_buffer_size);
-                                         sealed_pubkey_buffer_size);
-    if (sgx_lasterr == SGX_SUCCESS && (ecall_retval != 0)) {
-        fprintf(stderr,
-                "[GatewayApp]: ERROR: ecall_unseal_and_quote returned %d\n",
-                ecall_retval);
-        sgx_lasterr = SGX_ERROR_UNEXPECTED;
-    }
-
-    return (sgx_lasterr == SGX_SUCCESS);
-}
+// bool enclave_gen_quote() {
+//    sgx_status_t ecall_retval = SGX_ERROR_UNEXPECTED;
+//    sgx_spid_t spid;
+//
+//    printf("[GatewayApp]: Calling enclave to generate quote\n");
+//    printf("[GatewayApp]: SPID: %s\n", getenv("SGX_SPID"));
+//    from_hexstring((unsigned char *)&spid, (unsigned char
+//    *)getenv("SGX_SPID"),
+//                   16);
+//
+//    /*
+//     * Invoke ECALL, 'ecall_unseal_and_quote()', to generate a quote including
+//     * the sealed public key in the report data field.
+//     */
+//    sgx_lasterr = ecall_unseal_and_quote(enclave_id, &ecall_retval,
+//                                         (char *)sealed_pubkey_buffer,
+//                                         //(char *)sealed_privkey_buffer,
+//                                         // sealed_privkey_buffer_size);
+//                                         sealed_pubkey_buffer_size, spid);
+//    if (sgx_lasterr == SGX_SUCCESS && (ecall_retval != 0)) {
+//        fprintf(stderr,
+//                "[GatewayApp]: ERROR: ecall_unseal_and_quote returned %d\n",
+//                ecall_retval);
+//        sgx_lasterr = SGX_ERROR_UNEXPECTED;
+//    }
+//
+//    return (sgx_lasterr == SGX_SUCCESS);
+//}

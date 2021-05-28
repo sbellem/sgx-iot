@@ -12,6 +12,7 @@
 #include <sys/types.h>
 
 #include <openssl/bn.h>
+
 #include <sgx_quote.h>
 #include <sgx_uae_epid.h>
 #include <sgx_urts.h>

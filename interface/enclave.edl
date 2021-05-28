@@ -6,7 +6,7 @@
 
 enclave
 {
-	include "sgx_report.h"
+	include "sgx_quote.h"
 
     trusted
     {
@@ -37,6 +37,8 @@ enclave
             size_t signature_size);
         
         public sgx_status_t ecall_unseal_and_quote(
+            [out] sgx_report_t *report,
+            [in] sgx_target_info_t *target_info,
             [in, size=sealed_size]char *sealed,
             size_t sealed_size);
 
