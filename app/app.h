@@ -30,14 +30,14 @@ extern void *sealed_pubkey_buffer;       /* unused for signing */
 extern size_t sealed_pubkey_buffer_size; /* unused for signing */
 extern void *sealed_privkey_buffer;
 extern size_t sealed_privkey_buffer_size;
-// extern void *sealed_data_buffer;
-// extern size_t sealed_data_buffer_size;
 extern void *quote_buffer;
 extern size_t quote_buffer_size;
 extern void *signature_buffer;
 extern size_t signature_buffer_size;
 extern void *input_buffer;
 extern size_t input_buffer_size;
+extern void *quote_buffer;
+extern size_t quote_buffer_size;
 
 /* Function prototypes */
 
@@ -82,6 +82,8 @@ BIGNUM *bignum_from_little_endian_bytes_32(const unsigned char *const bytes);
 bool save_signature(const char *const signature_file);
 
 bool save_public_key(const char *const public_key_file);
+
+bool save_quote(const char *const quote_file);
 
 void destroy_enclave(void);
 

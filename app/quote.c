@@ -49,34 +49,29 @@ bool enclave_gen_quote() {
     BIGNUM *bn_y =
         bignum_from_little_endian_bytes_32((uint8_t *)public_key_buffer + 32);
 
-    FILE *fpx = open_file("bn_x", "wt");
-    BN_print_fp(fpx, bn_x);
-    FILE *fpy = open_file("bn_y", "wt");
-    BN_print_fp(fpy, bn_y);
-
-    printf("\nbn_x: %s\n", BN_bn2dec(bn_x));
-    printf("bn_y: %s\n\n", BN_bn2dec(bn_y));
-    printf("\nbn_x: %s\n", BN_bn2hex(bn_x));
-    printf("bn_y: %s\n\n", BN_bn2hex(bn_y));
+    printf("\nbn_x dec: %s\n", BN_bn2dec(bn_x));
+    printf("bn_y dec: %s\n\n", BN_bn2dec(bn_y));
+    printf("bn_x hex: %s\n", BN_bn2hex(bn_x));
+    printf("bn_y hex: %s\n\n", BN_bn2hex(bn_y));
     /* ----- ----- ----- ----- experiment ----- ----- ----- ----- */
 
     // calculate quote size
     sgx_quote_t *quote;
-    uint32_t sz = 0;
+    uint32_t quote_size = 0;
 
     printf("[GatewayApp]: Call sgx_calc_quote_size() ...\n");
-    status = sgx_calc_quote_size(NULL, 0, &sz);
+    status = sgx_calc_quote_size(NULL, 0, &quote_size);
     if (status != SGX_SUCCESS) {
         fprintf(stderr, "SGX error while getting quote size: %08x\n", status);
         return 1;
     }
 
-    quote = (sgx_quote_t *)malloc(sz);
+    quote = (sgx_quote_t *)malloc(quote_size);
     if (quote == NULL) {
         fprintf(stderr, "out of memory\n");
         return 1;
     }
-    memset(quote, 0, sz);
+    memset(quote, 0, quote_size);
 
     // get quote
     sgx_quote_sign_type_t linkable = SGX_UNLINKABLE_SIGNATURE;
@@ -85,8 +80,8 @@ bool enclave_gen_quote() {
     from_hexstring((unsigned char *)&spid, (unsigned char *)getenv("SGX_SPID"),
                    16);
     printf("[GatewayApp]: Call sgx_get_quote() ...\n");
-    status =
-        sgx_get_quote(&report, linkable, &spid, NULL, NULL, 0, NULL, quote, sz);
+    status = sgx_get_quote(&report, linkable, &spid, NULL, NULL, 0, NULL, quote,
+                           quote_size);
     fprintf(stdout, "[GatewayApp]: status of sgx_get_quote(): %08x\n", status);
     printf("[GatewayApp]: status of sgx_get_quote(): %s\n",
            status == SGX_SUCCESS ? "success" : "error");
@@ -94,6 +89,10 @@ bool enclave_gen_quote() {
         fprintf(stderr, "[GatewayApp]: sgx_get_quote: %08x\n", status);
         return 1;
     }
+
+    // copy quote and quote_size into globals
+    memcpy(&quote_buffer, &quote, quote_size);
+    memcpy(&quote_buffer_size, &quote_size, sizeof(quote_size));
 
     printf("\n[GatewayApp]: MRENCLAVE: \t");
     print_hexstring(stdout, &quote->report_body.mr_enclave,
@@ -107,7 +106,7 @@ bool enclave_gen_quote() {
     printf("\n\n");
 
     char *b64quote = NULL;
-    b64quote = base64_encode((char *)quote, sz);
+    b64quote = base64_encode((char *)quote, quote_size);
     if (b64quote == NULL) {
         printf("Could not base64 encode quote\n");
         return 1;
@@ -129,4 +128,28 @@ bool enclave_gen_quote() {
         "sgx-attestation-api-spec.pdf\n");
 
     return (sgx_lasterr == SGX_SUCCESS);
+}
+
+bool save_quote(const char *const quote_file) {
+    bool ret_status = true;
+
+    printf("[GatewayApp]: Saving quote\n");
+
+    FILE *fquote = open_file(quote_file, "wb");
+
+    if (fquote == NULL) {
+        fprintf(stderr, "[GatewayApp]: save_quote() fopen failed\n");
+        sgx_lasterr = SGX_ERROR_UNEXPECTED;
+        return false;
+    }
+
+    if (fwrite((char *)quote_buffer, quote_buffer_size, 1, fquote) != 1) {
+        fprintf(stderr, "[GatewayApp]: Quote only partially written.\n");
+        sgx_lasterr = SGX_ERROR_UNEXPECTED;
+        ret_status = false;
+    }
+
+    fclose(fquote);
+
+    return ret_status;
 }

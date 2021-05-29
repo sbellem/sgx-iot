@@ -122,24 +122,22 @@ int main(int argc, char **argv) {
     bool success_status =
         create_enclave(opt_enclave_path) && enclave_get_buffer_sizes() &&
         allocate_buffers() && (opt_keygen ? enclave_generate_key() : true) &&
+        (opt_keygen
+             ? save_enclave_state(opt_sealedprivkey_file, opt_sealedpubkey_file)
+             : true) &&
         // quote
         (opt_quote ? load_sealedpubkey(opt_sealedpubkey_file) : true) &&
-        //(opt_quote ? load_enclave_state(opt_sealedpubkey_file) : true) &&
         (opt_quote ? enclave_gen_quote() : true) &&
-        //(opt_quote ? save_quote(opt_quote_file) : true) &&
+        (opt_quote ? save_quote(opt_quote_file) : true) &&
+        //(opt_quote ? save_public_key(opt_public_key_file) : true) &&
         // sign
         (opt_sign ? load_enclave_state(opt_sealedprivkey_file) : true) &&
         (opt_sign ? load_input_file(opt_input_file) : true) &&
         (opt_sign ? enclave_sign_data() : true) &&
         // save_enclave_state(opt_sealedprivkey_file) &&
-        (opt_keygen
-             ? save_enclave_state(opt_sealedprivkey_file, opt_sealedpubkey_file)
-             : true) &&
         (opt_sign ? save_signature(opt_signature_file) : true);
-    //(opt_keygen ? save_public_key(opt_public_key_file) : true);
     // TODO call function to generate report with public key in it
     //(opt_keygen ? enclave_generate_quote() : true);
-    //(opt_keygen ? save_public_key(opt_public_key_file) : true);
 
     if (sgx_lasterr != SGX_SUCCESS) {
         fprintf(stderr, "[GatewayApp]: ERROR: %s\n",

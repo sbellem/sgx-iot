@@ -11,7 +11,7 @@ test -d demo_sgx || mkdir demo_sgx
 cd demo_sgx
 
 # Clean up from previous runs
-rm -f sealedprivkey.bin sealedpubkey.bin secp256r1.pem Sensor_Data.signature
+rm -f sealedprivkey.bin sealedpubkey.bin secp256r1.pem Sensor_Data.signature quote.bin
 
 echo "Provisioning private elliptic curve key:"
 # Generate the keypair (both private & public keys are sealed to enclave)
@@ -23,10 +23,21 @@ echo "Provisioning private elliptic curve key:"
     --public-key secp256r1.pem
 echo "Key provisoning completed.\n"
 
-echo "Generating quote for remote attestation:"
+echo "\nGenerating quote for remote attestation:"
 # Generate the quote
 ../app/app --quote \
     --enclave-path `pwd`/../enclave/enclave.signed.so \
     --sealedpubkey sealedpubkey.bin \
-    --quotefile quote.json
-echo "Quote generation completed."
+    --quotefile quote.bin
+echo "Quote generation completed.\n"
+
+echo "\nSigning sensor data:"
+../app/app --sign \
+    --enclave-path `pwd`/../enclave/enclave.signed.so \
+    --sealedprivkey sealedprivkey.bin \
+    --signature Sensor_Data.signature ../Sensor_Data
+echo "Sensor data signed.\n"
+
+echo "\nVerifying signature:"
+cd ..
+python verifysig.py
