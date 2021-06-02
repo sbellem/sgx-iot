@@ -52,17 +52,17 @@ else:
 print("IAS response is: ")
 pprint.pprint(res.json())
 
-ias_report = {'body': res.json(), 'headers': dict(res.headers)}
+ias_report = {"body": res.json(), "headers": dict(res.headers)}
 
-with open('demo_sgx/ias_report.json', 'w') as f:
+with open("demo_sgx/ias_report.json", "w") as f:
     json.dump(ias_report, f)
 
-import auditee # noqa
+import auditee  # noqa
 
 auditee.verify_mrenclave(
-    '/usr/src/sgxiot/',
-    '/usr/src/sgxiot/Enclave.signed.so',
-    ias_report='/usr/src/sgxiot/demo-sgx/ias-report.json',
+    "/usr/src/sgxiot/",
+    "/usr/src/sgxiot/enclave/enclave.signed.so",
+    ias_report="/usr/src/sgxiot/demo_sgx/ias_report.json",
 )
 
 

@@ -88,8 +88,30 @@ ENV SGX_DEBUG $SGX_DEBUG
 
 RUN make just-app
 
+# docker cli
+RUN set -ex; \
+    \
+    apt-get update; \
+    apt-get install -y \
+        apt-transport-https \
+        ca-certificates \
+        curl \
+        gnupg \
+        lsb-release;
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+        gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+RUN echo \
+    "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+RUN apt-get update && apt-get install -y docker-ce-cli
+
 # docker buildx
-RUN mkdir -p ~/.docker/cli-plugins
-RUN cd ~/.docker/cli-plugins
-RUN curl https://github.com/docker/buildx/releases/download/v0.5.1/buildx-v0.5.1.darwin-amd64 -o docker-buildx
-RUN chmod a+x ~/.docker/cli-plugins/docker-buildx
+#RUN set -ex; \
+#    \
+#    apt-get update && apt-get install -y curl; \
+#    mkdir -p ~/.docker/cli-plugins; \
+#    cd ~/.docker/cli-plugins; \
+#    curl -L https://github.com/docker/buildx/releases/download/v0.5.1/buildx-v0.5.1.darwin-amd64 -o docker-buildx; \
+#    chmod a+x ~/.docker/cli-plugins/docker-buildx;
