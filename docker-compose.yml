@@ -31,12 +31,16 @@ services:
     environment:
       SGX_SPID: ${SGX_SPID}
       IAS_PRIMARY_KEY: ${IAS_PRIMARY_KEY}
+      PYTHONBREAKPOINT: ipdb.set_trace
     volumes:
       - aesmd-socket:/var/run/aesmd
       - ./demo_sgx:/usr/src/sgxiot/demo_sgx
+      - ./.enclavehub.yml:/usr/src/sgxiot/.enclavehub.yml
+      - ./enclave.nix:/usr/src/sgxiot/enclave.nix
       - ./verifysig.py:/usr/src/sgxiot/verifysig.py
       - ./run_keygen.sh:/usr/src/sgxiot/run_keygen.sh
       - ./run_quote.sh:/usr/src/sgxiot/run_quote.sh
+      - /var/run/docker.sock:/var/run/docker.sock
     #command: ./run_demo_sgx.sh
     command: ./run_quote.sh
 

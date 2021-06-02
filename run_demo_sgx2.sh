@@ -31,15 +31,13 @@ echo "\nGenerating quote for remote attestation:"
     --quotefile quote.bin
 echo "Quote generation completed.\n"
 
-echo "\nVerify MRENCLAVE with source code:"
+echo "\nSigning sensor data:"
+../app/app --sign \
+    --enclave-path `pwd`/../enclave/enclave.signed.so \
+    --sealedprivkey sealedprivkey.bin \
+    --signature Sensor_Data.signature ../Sensor_Data
+echo "Sensor data signed.\n"
 
-#echo "\nSigning sensor data:"
-#../app/app --sign \
-#    --enclave-path `pwd`/../enclave/enclave.signed.so \
-#    --sealedprivkey sealedprivkey.bin \
-#    --signature Sensor_Data.signature ../Sensor_Data
-#echo "Sensor data signed.\n"
-#
-#echo "\nVerifying signature:"
-#cd ..
-#python verifysig.py
+echo "\nVerifying signature:"
+cd ..
+python verifysig.py

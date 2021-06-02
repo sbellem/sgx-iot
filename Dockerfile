@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y \
                 python3.9-dev \
                 python3-pip \
                 vim \
+                git \
         && rm -rf /var/lib/apt/lists/*
 
 # symlink python3.9 to python
@@ -61,7 +62,12 @@ RUN set -ex; \
 		\) -exec rm -rf '{}' +; \
 	rm -f get-pip.py
 
-RUN pip install cryptography ipython requests pyyaml
+RUN pip install cryptography ipython requests pyyaml ipdb
+RUN set -ex; \
+    \
+    cd /tmp; \
+    git clone --recurse-submodules https://github.com/sbellem/auditee.git; \
+    pip install auditee/
 
 WORKDIR /usr/src/sgxiot
 
@@ -81,3 +87,9 @@ ARG SGX_DEBUG=1
 ENV SGX_DEBUG $SGX_DEBUG
 
 RUN make just-app
+
+# docker buildx
+RUN mkdir -p ~/.docker/cli-plugins
+RUN cd ~/.docker/cli-plugins
+RUN curl https://github.com/docker/buildx/releases/download/v0.5.1/buildx-v0.5.1.darwin-amd64 -o docker-buildx
+RUN chmod a+x ~/.docker/cli-plugins/docker-buildx

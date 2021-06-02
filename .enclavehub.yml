@@ -1,6 +1,6 @@
 
 enclaves:
-  - name: sgx-hashmachine
+  - name: sgx-iot
     build:
       builder: docker
       build_kwargs:
@@ -8,8 +8,8 @@ enclaves:
         file: nix.Dockerfile
         target: export-stage
       output_dir: out
-      enclave_file: Enclave.so
-    enclave_config: Enclave/Enclave.config.xml
+      enclave_file: enclave.unsigned.so
+    enclave_config: enclave/enclave.config.xml
     #signed_enclave:
     #  path: .enclavehub/Enclave.signed.so
     #  mrenclave: a8a3094d76217c5dd0a1126ac142b36dd34f88514a99bf8dfc8ea852f1fa6238 
