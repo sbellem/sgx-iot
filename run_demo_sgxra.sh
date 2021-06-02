@@ -38,6 +38,6 @@ echo "\nSigning sensor data:"
     --signature Sensor_Data.signature ../Sensor_Data
 echo "Sensor data signed.\n"
 
-echo "\nVerifying signature:"
+echo "\nVerifying quote and signature:"
 cd ..
-python verifysig.py
+python verify.py
