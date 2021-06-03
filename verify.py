@@ -36,7 +36,7 @@ with open("demo_sgx/quote.bin", "rb") as f:
 
 quote_b64 = base64.b64encode(quote_bytes)
 quote_dict = {"isvEnclaveQuote": quote_b64.decode()}
-print(f"{term.blue}{quote_b64.decode()}{term.normal}")
+print(f"{term.blue}{quote_b64.decode()}{term.normal}\n")
 
 # send the quote for verification
 # To send the quote over to Intel, you need your API primary subscription key,
@@ -56,7 +56,7 @@ time.sleep(4)
 res = requests.post(url, json=quote_dict, headers=headers)
 
 if res.ok:
-    print(f"{term.green}Attestation verification succeeded!\n{term.normal}")
+    print(f"{term.green}Attestation report verification succeeded!\n{term.normal}")
 else:
 
     sys.exit(

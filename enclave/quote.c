@@ -65,8 +65,8 @@ sgx_status_t ecall_unseal_and_quote(sgx_report_t *report,
     // --------------------------------------------- END WIP
 
     print(
-        "\nTrustedApp: Unsealed the sealed public key, generated a quote with "
-        "with this public key in the report data, and sent quote back\n");
+        "\n[[TrustedApp]]: Unsealed the sealed public key and created a report "
+        "containing the public key in the report data.\n");
 
     // ret = SGX_SUCCESS;
 
