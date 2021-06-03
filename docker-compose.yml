@@ -37,12 +37,13 @@ services:
       - ./demo_sgx:/usr/src/sgxiot/demo_sgx
       - ./.enclavehub.yml:/usr/src/sgxiot/.enclavehub.yml
       - ./enclave.nix:/usr/src/sgxiot/enclave.nix
-      - ./verifysig.py:/usr/src/sgxiot/verifysig.py
+      - ./verify.py:/usr/src/sgxiot/verify.py
       - ./run_keygen.sh:/usr/src/sgxiot/run_keygen.sh
       - ./run_quote.sh:/usr/src/sgxiot/run_quote.sh
+      - ./run_demo_sgxra.sh:/usr/src/sgxiot/run_demo_sgxra.sh
       - /var/run/docker.sock:/var/run/docker.sock
     #command: ./run_demo_sgx.sh
-    command: ./run_quote.sh
+    command: ./run_demo_sgxra.sh
 
 volumes:
   aesmd-socket:

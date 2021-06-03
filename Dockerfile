@@ -62,7 +62,7 @@ RUN set -ex; \
 		\) -exec rm -rf '{}' +; \
 	rm -f get-pip.py
 
-RUN pip install cryptography ipython requests pyyaml ipdb
+RUN pip install cryptography ipython requests pyyaml ipdb blessings colorama
 RUN set -ex; \
     \
     cd /tmp; \
@@ -107,11 +107,4 @@ RUN echo \
 
 RUN apt-get update && apt-get install -y docker-ce-cli
 
-# docker buildx
-#RUN set -ex; \
-#    \
-#    apt-get update && apt-get install -y curl; \
-#    mkdir -p ~/.docker/cli-plugins; \
-#    cd ~/.docker/cli-plugins; \
-#    curl -L https://github.com/docker/buildx/releases/download/v0.5.1/buildx-v0.5.1.darwin-amd64 -o docker-buildx; \
-#    chmod a+x ~/.docker/cli-plugins/docker-buildx;
+ENV PYTHONUNBUFFERED 1
