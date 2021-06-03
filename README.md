@@ -52,6 +52,126 @@ data.
 $ docker-compose run --rm sgxiot ./run_demo_sgxra.sh
 ```
 
+```console
+Starting sgx-iot_aesm_1 ... done
+Creating sgx-iot_sgxiot_run ... done
+
+Provisioning elliptic curve key:
+--------------------------------
+[GatewayApp]: Creating enclave
+[GatewayApp]: Querying enclave for buffer sizes
+TrustedApp: Sizes for sealed public key, sealed private key and signature calculated successfully.
+[GatewayApp]: Allocating buffers
+[GatewayApp]: Calling enclave to generate key material
+[[TrustedApp]]: Key pair generated and private & public keys were sealed.
+[GatewayApp]: Saving enclave state - sealed priv key                                     
+[GatewayApp]: Saving enclave state - sealed pub key   
+[GatewayApp]: Destroying enclave                                 
+[GatewayApp]: Deallocating buffers                                                
+Key provisoning completed.                                                                                                    
+                                                                                                                        
+Generating quote for remote attestation:                                                                        
+----------------------------------------
+[GatewayApp]: Creating enclave
+...
+[GatewayApp]: Loading sealed public key
+[GatewayApp]: Calling enclave to generate report
+[[TrustedApp]]: Received the sealed public key.
+[[TrustedApp]]: Calling enclave to generate attestation report
+[[TrustedApp]]: Unsealed the sealed public key and created a report containing the public key in the report data.
+[GatewayApp]: Call sgx_calc_quote_size() ...                                     
+[GatewayApp]: Call sgx_get_quote() ...                                          
+[GatewayApp]: status of sgx_get_quote(): success                                                   
+[GatewayApp]: Saving quote
+[GatewayApp]: Destroying enclave
+[GatewayApp]: Deallocating buffers
+Quote generation completed.
+
+Signing sensor data:
+--------------------
+[GatewayApp]: Creating enclave
+[GatewayApp]: Querying enclave for buffer sizes
+
+TrustedApp: Sizes for sealed public key, sealed private key and signature calculated successfully.
+[GatewayApp]: Allocating buffers
+[GatewayApp]: Loading enclave state
+[GatewayApp]: Loading input file
+[GatewayApp]: Calling enclave to generate key material
+
+TrustedApp: Received sensor data and the sealed private key.
+
+TrustedApp: Unsealed the sealed private key, signed sensor data with this private key and then, sent the signature back.
+[GatewayApp]: Destroying enclave
+[GatewayApp]: Deallocating buffers
+Sensor data signed.
+
+Verifying quote and signature:
+------------------------------
+Reading quote from file ...
+AgAAAFsLAAALAAoAAAAAAFOrdeScwC/lZP1RWReIG+gNExGhsiX172fOAXRJJfh8CRH//wECAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAHAAAAAAAAALlNRyDzfz6RxY9YGjS9izaemohHd+emMc7mTcUIrSBKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACDurDbNIc2BjZH7kIqysRdpX+aLwKCWa1DLNlHRrcw2wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0gQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9qwK5AwOKcmy2Lchz/epYRd7yQrsy3RJJY/6JMGFaTq0WNTQ9ZXeFnu0L7nIHhn2oRQ+bTigevKk05LmUF+DaqAIAAEKqmwCJOHIX3gWYoKOVETx2BQNEGuuLXiSz202lEBbYk7/ZhpJhFiM59pkdXlM/aP3TI8ZgIL1JSfmD2E6ykCRnqPF5ZFOrv5F7DJJDdLQo+6/7fU1VNHotTY3sTD8xJXH58YXeJi7cXClkC+5pYai7Ui+GXu1o71J2gRKLrkxSn8LwEiRmws7Lk5AfhsfSygQaKJb+VFs1uumf8BxAY1K6hPu8zcOWw4LUBDHeSrONhc185ydiBJjF0HgeD/ApfQImoMQnHLP9BVMqfGji6O0gGzsBbIp74VUxv9ZNkso4/AMY2VL++bxxoqUuBPB24DvBMptLDgOsjMcCZPiDpxToxa4Zcwd9zagVuKVzHuRrtGXbLduIL+mLqR0C4wifLCduF5paUI88EbWzRWgBAACykbFLOGPTItXa2xFLdmCX1u6QIB2jp7xpAzuFr9cuM3X7RBUA466QiAE13IFtYTl3n05tKKt+AEgkrieQzayqwHgAuB+tlVRv+6BIGwstWXjqPBDNW5Tpy2QS3VT04j31quav05wp1DtukA7y8Ef/sMbNMThySOlTmq9Gzsi0jjR0zIXFfiqGQAVIwiqfc3u2kcbwjqa1hgoBdJf9SaC/+UEWy5BMGlD9WGI9sZHqOsnJCKu29NhZnMbgvb2bjJJi3Jit9veRUdv+jNH7LsgKVrJMRoUGUIacHe6L912rQDWT/i9dklrcRz2gqhN01aL7W1zufQy6PZR2OA5eXzU7u9yIFkQREsO5110uZ5W3QyY5sPR4v9WoPmbATk40NDVzR6hDlMtu1toDMuw8zivO54G5DwvZtkOHJBscLqld4HLaZW6iROsBsOuZ/qTrqBZIbWvldWTe5TzjT6ogzsvW9IEgjQvuxPW5/m0g6X8ygv94HrUXTodl
+
+Sending quote to Intel's Attestation Service for verification ...
+Attestation verification succeeded!
+
+IAS response is: 
+{
+    "id": "182475002551792100629007094006738923356",
+    "timestamp": "2021-06-03T03:53:09.602034",
+    "version": 4,
+    "advisoryURL": "https://security-center.intel.com",
+    "advisoryIDs": [
+        "INTEL-SA-00161",
+        "INTEL-SA-00381",
+        "INTEL-SA-00389",
+        "INTEL-SA-00320",
+        "INTEL-SA-00329",
+        "INTEL-SA-00220",
+        "INTEL-SA-00270",
+        "INTEL-SA-00293"
+    ],
+    "isvEnclaveQuoteStatus": "GROUP_OUT_OF_DATE",
+    "platformInfoBlob": "150200650400090000111102040101070000000000000000000B00000B000000020000000000000B5B551B76CD1668F3420C901F6195DDDB3330A40FE4A31A3DE6C982CD5420B077AA4D1FB5C9099DA24A0953745D5FC67415A63FFAC6E73BE48191709DEE4F391F36",
+    "isvEnclaveQuoteBody": "AgAAAFsLAAALAAoAAAAAAFOrdeScwC/lZP1RWReIG+gNExGhsiX172fOAXRJJfh8CRH//wECAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAHAAAAAAAAALlNRyDzfz6RxY9YGjS9izaemohHd+emMc7mTcUIrSBKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACDurDbNIc2BjZH7kIqysRdpX+aLwKCWa1DLNlHRrcw2wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0gQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9qwK5AwOKcmy2Lchz/epYRd7yQrsy3RJJY/6JMGFaTq0WNTQ9ZXeFnu0L7nIHhn2oRQ+bTigevKk05LmUF+Da"
+}
+
+Verify reported MRENCLAVE against trusted source code ...
+
+Reproducibility Report
+----------------------
+- Signed enclave MRENCLAVE:                     b94d4720f37f3e91c58f581a34bd8b369e9a884777e7a631cee64dc508ad204a
+- Built-from-source enclave MRENCLAVE:          b94d4720f37f3e91c58f581a34bd8b369e9a884777e7a631cee64dc508ad204a
+- IAS report MRENCLAVE:                         b94d4720f37f3e91c58f581a34bd8b369e9a884777e7a631cee64dc508ad204a
+
+MRENCLAVES match!
+
+Report data
+-----------
+The following REPORT DATA contained in the remote attestation verification report CAN be trusted.
+3dab02b903038a726cb62dc873fdea5845def242bb32dd124963fe8930615a4ead1635343d6577859eed0bee7207867da8450f9b4e281ebca934e4b99417e0da
+
+Extracting public key from IAS report ...
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAETlphMIn+Y0kS3TK7QvLeRVjq/XPI
+LbZscooDA7kCqz3a4BeUueQ0qbweKE6bD0WofYYHcu4L7Z6Fd2U9NDUWrQ==
+-----END PUBLIC KEY-----
+
+Verifying signature:
+--------------------
+3044022063b906028557e59869367b913d77afb213d8c3924dd191f69886855fcb7e6ea202207d350c6aec38f38198831b881b5b8530066fce075e9bb62863387e5299a20450
+for sensor data:
+Sensor Data Message !
+** Start of sensor data ***
+123.456    78.9    xyz
+111.456    78.9    xyz
+222.456    78.9    xyz
+333.456    78.9    xyz
+444.456    78.9    xyz
+555.456    78.9    xyz
+*** End of sensor data ***
+
+Signature verification successful!
+```
+
 The sections below, provide some details about some key steps of the demo.
 
 ### Send the quote to Intel
