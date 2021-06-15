@@ -8,10 +8,11 @@
 
 
 test -d demo_sgx || mkdir demo_sgx
-cd demo_sgx
 
 # Clean up from previous runs
-rm -f sealedprivkey.bin sealedpubkey.bin secp256r1.pem Sensor_Data.signature quote.bin
+rm -f demo_sgx/*
+cd demo_sgx
+
 
 echo "Provisioning private elliptic curve key:"
 # Generate the keypair (both private & public keys are sealed to enclave)
