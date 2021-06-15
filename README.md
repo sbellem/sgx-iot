@@ -36,6 +36,17 @@ export SGX_SPID=<your-SPID>
 export IAS_PRIMARY_KEY=<your-ias-primary-key>
 ```
 
+Alternatively, you can use place the environment variables in a `.env` file, under
+the root of the repository. **NOTE** that the `IAS_PRIMARY_KEY` **MUST** be kept
+secret. Consequently, the file `.env` is not tracked by git, as it **MUST NOT** be
+uploaded to a public repository, such as on GitHub.
+
+```shell
+# .env sample
+SGX_SPID=<your-SPID>
+IAS_PRIMARY_KEY=<your-ias-primary-key>
+```
+
 ### Run the demo
 The demo creates an asymmetric elliptic curve keypair. It seals both the private key and
 public key. The public key is sealed to protect it against tampering as it is included
