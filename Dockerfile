@@ -1,4 +1,4 @@
-FROM initc3/nix-sgx-sdk@sha256:509e4c8e5ab7aeea4d78d2f61df45caa388279036a0c8e984630321d783ea2d3 AS build-enclave
+FROM  nixpkgs/nix AS build-enclave
 
 WORKDIR /usr/src
 
@@ -10,10 +10,14 @@ COPY makefile /usr/src/makefile
 COPY nix /usr/src/nix
 COPY enclave.nix /usr/src/enclave.nix
 
+# install cachix, to fetch prebuilt sgxsdk from cache
+RUN nix-env -iA cachix -f https://cachix.org/api/v1/install
+RUN /nix/store/*cachix*/bin/cachix use gluonixpkgs
+
 RUN nix-build enclave.nix
 
 
-FROM initc3/linux-sgx:2.13-ubuntu20.04
+FROM initc3/linux-sgx:2.13.3-ubuntu20.04
 
 RUN apt-get update && apt-get install -y \
                 autotools-dev \

@@ -22,5 +22,17 @@
         "type": "tarball",
         "url": "https://github.com/NixOS/nixpkgs/archive/1db42b7fe3878f3f5f7a4f2dc210772fd080e205.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "sgx": {
+        "branch": "sgxsdk-2.13.3a0-master-ci",
+        "description": "Nix Packages collection",
+        "homepage": null,
+        "owner": "sbellem",
+        "repo": "nixpkgs",
+        "rev": "f7535c049a20ce1d404ffa20e2fd93c8a2b7c15a",
+        "sha256": "133016gmgxzbcns11vdh817paryq8czqlif56z304gyvvw16dj41",
+        "type": "tarball",
+        "url": "https://github.com/sbellem/nixpkgs/archive/f7535c049a20ce1d404ffa20e2fd93c8a2b7c15a.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
