@@ -1,13 +1,23 @@
-FROM initc3/nix-sgx-sdk@sha256:509e4c8e5ab7aeea4d78d2f61df45caa388279036a0c8e984630321d783ea2d3 AS build-stage
+FROM  nixpkgs/nix AS build-stage
+
+RUN set -ex \
+        \
+        && mkdir /etc/nix \
+        && echo "sandbox = true" >> /etc/nix/nix.conf \
+        && nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs \
+        && nix-channel --update
 
 WORKDIR /usr/src
-#COPY . .
 COPY common /usr/src/common
 COPY enclave /usr/src/enclave
 COPY interface /usr/src/interface
 COPY nix /usr/src/nix
 COPY enclave.nix /usr/src/enclave.nix
 COPY makefile /usr/src/makefile
+
+# cachix & sgxsdk from cache
+RUN nix-env -iA cachix -f https://cachix.org/api/v1/install
+RUN /nix/store/*cachix*/bin/cachix use gluonixpkgs
 
 RUN nix-build enclave.nix
 
