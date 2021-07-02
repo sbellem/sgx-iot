@@ -3,17 +3,19 @@
 #                            Demo base                                       #
 #                                                                            #
 ##############################################################################
-FROM initc3/linux-sgx:2.13.3-ubuntu20.04 AS demo-base
-#FROM ubuntu:20.04
+#FROM initc3/linux-sgx:2.13.3-ubuntu20.04 AS demo-base
+FROM ubuntu:20.04 AS demo-base
 
+ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED 1
 
+# Python 3.9
 RUN apt-get update && apt-get install -y \
                 python3.9 \
                 python3.9-dev \
                 python3-pip \
-                vim \
                 git \
+                wget \
         && rm -rf /var/lib/apt/lists/*
 
 # symlink python3.9 to python
@@ -68,6 +70,28 @@ RUN echo \
   $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 RUN apt-get update && apt-get install -y docker-ce-cli
+
+# SGX PSW
+ENV INTEL_SGX_URL "https://download.01.org/intel-sgx"
+RUN set -eux; \
+    url="$INTEL_SGX_URL/sgx_repo/ubuntu"; \
+    echo "deb [arch=amd64] $url focal main" \
+                | tee /etc/apt/sources.list.d/intel-sgx.list; \
+    wget -qO - "$url/intel-sgx-deb.key" | apt-key add -; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+                libsgx-headers \
+                libsgx-ae-epid \
+                libsgx-ae-le \
+                libsgx-ae-pce \
+                libsgx-enclave-common \
+                libsgx-enclave-common-dev \
+                libsgx-epid \
+                libsgx-epid-dev \
+                libsgx-uae-service \
+                libsgx-urts; \
+    rm -rf /var/lib/apt/lists/*;
+
 RUN pip install cryptography ipython requests pyyaml ipdb blessings colorama
 RUN set -ex; \
     \
@@ -154,3 +178,4 @@ COPY Sensor_Data /usr/src/sgxiot/
 
 COPY --from=build-enclave /usr/src/result/bin/enclave.signed.so enclave/enclave.signed.so
 COPY --from=build-app /usr/src/sgxiot/app /usr/src/sgxiot/app
+COPY --from=initc3/linux-sgx:2.13.3-ubuntu20.04 /opt/sgxsdk /opt/sgxsdk
