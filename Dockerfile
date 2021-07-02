@@ -154,7 +154,7 @@ ENV SGX_MODE $SGX_MODE
 ARG SGX_DEBUG=1
 ENV SGX_DEBUG $SGX_DEBUG
 
-RUN make just-app
+RUN make untrusted
 
 ##############################################################################
 #                                                                            #
