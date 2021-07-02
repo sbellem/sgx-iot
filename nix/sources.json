@@ -24,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "sgx": {
-        "branch": "sgxsdk-2.13.3a0-master-ci",
-        "description": "Nix Packages collection",
+        "branch": "main",
+        "description": "Nix derivations for linux-sgx",
         "homepage": null,
-        "owner": "sbellem",
-        "repo": "nixpkgs",
-        "rev": "f7535c049a20ce1d404ffa20e2fd93c8a2b7c15a",
-        "sha256": "133016gmgxzbcns11vdh817paryq8czqlif56z304gyvvw16dj41",
+        "owner": "initc3",
+        "repo": "nix-linux-sgx",
+        "rev": "71b98d9b54c70c04c1ccbb484aa34f5dd00ae238",
+        "sha256": "138jf0dbkgj7wi4ayj52fgg8kbd91ikg9dn2ik3x9qi7ds80nlv5",
         "type": "tarball",
-        "url": "https://github.com/sbellem/nixpkgs/archive/f7535c049a20ce1d404ffa20e2fd93c8a2b7c15a.tar.gz",
+        "url": "https://github.com/initc3/nix-linux-sgx/archive/71b98d9b54c70c04c1ccbb484aa34f5dd00ae238.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
