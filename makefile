@@ -15,7 +15,7 @@ all:
 enclave.signed.so:
 	$(MAKE) $(MFLAGS) -C enclave SGX_MODE=$(SGX_MODE)
 
-just-app:
+untrusted:
 	$(MAKE) $(MFLAGS) -C app SGX_MODE=$(SGX_MODE)
 
 clean:
