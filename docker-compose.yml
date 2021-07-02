@@ -39,7 +39,7 @@ services:
       - ./demo_sgx:/usr/src/sgxiot/demo_sgx
       - ./.enclavehub.yml:/usr/src/sgxiot/.enclavehub.yml
       - ./common:/usr/src/sgxiot/common
-      - ./enclave.nix:/usr/src/sgxiot/enclave.nix
+      - ./default.nix:/usr/src/sgxiot/default.nix
       - ./makefile:/usr/src/sgxiot/makefile
       - ./verify.py:/usr/src/sgxiot/verify.py
       - ./run_keygen.sh:/usr/src/sgxiot/run_keygen.sh

@@ -12,14 +12,14 @@ COPY common /usr/src/common
 COPY enclave /usr/src/enclave
 COPY interface /usr/src/interface
 COPY nix /usr/src/nix
-COPY enclave.nix /usr/src/enclave.nix
+COPY default.nix /usr/src/default.nix
 COPY makefile /usr/src/makefile
 
 # cachix & sgxsdk from cache
 RUN nix-env -iA cachix -f https://cachix.org/api/v1/install
-RUN /nix/store/*cachix*/bin/cachix use gluonixpkgs
+RUN /nix/store/*cachix*/bin/cachix use initc3
 
-RUN nix-build enclave.nix
+RUN nix-build
 
 FROM scratch AS export-stage
 COPY --from=build-stage /usr/src/result/bin /

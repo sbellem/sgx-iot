@@ -114,13 +114,13 @@ COPY interface /usr/src/interface
 COPY makefile /usr/src/makefile
 
 COPY nix /usr/src/nix
-COPY enclave.nix /usr/src/enclave.nix
+COPY default.nix /usr/src/default.nix
 
 # install cachix, to fetch prebuilt sgxsdk from cache
 RUN nix-env -iA cachix -f https://cachix.org/api/v1/install
-RUN /nix/store/*cachix*/bin/cachix use gluonixpkgs
+RUN /nix/store/*cachix*/bin/cachix use initc3
 
-RUN nix-build enclave.nix
+RUN nix-build
 
 ##############################################################################
 #                                                                            #
@@ -170,7 +170,7 @@ COPY enclave /usr/src/sgxiot/enclave
 COPY interface /usr/src/sgxiot/interface
 COPY makefile /usr/src/sgxiot/makefile
 COPY nix /usr/src/sgxiot/nix
-COPY enclave.nix /usr/src/sgxiot/enclave.nix
+COPY default.nix /usr/src/sgxiot/default.nix
 COPY .enclavehub.yml /usr/src/sgxiot/
 COPY nix.Dockerfile /usr/src/sgxiot/
 
