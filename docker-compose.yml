@@ -33,7 +33,6 @@ services:
       IAS_PRIMARY_KEY: ${IAS_PRIMARY_KEY}
       PYTHONBREAKPOINT: ipdb.set_trace
       SGX_DEBUG: 1
-    env_file: .env
     volumes:
       - aesmd-socket:/var/run/aesmd
       - ./demo_sgx:/usr/src/sgxiot/demo_sgx
