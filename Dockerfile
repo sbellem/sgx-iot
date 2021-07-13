@@ -171,7 +171,7 @@ COPY interface /usr/src/sgxiot/interface
 COPY makefile /usr/src/sgxiot/makefile
 COPY nix /usr/src/sgxiot/nix
 COPY default.nix /usr/src/sgxiot/default.nix
-COPY .enclavehub.yml /usr/src/sgxiot/
+COPY .auditee.yml /usr/src/sgxiot/
 COPY nix.Dockerfile /usr/src/sgxiot/
 
 COPY Sensor_Data /usr/src/sgxiot/
