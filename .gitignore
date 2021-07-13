@@ -54,3 +54,6 @@ demo_sgx/
 
 # user-specific configuration (e.g. SGX_SPID, IAS_PRIMARY_KEY)
 .env
+
+# nix-build output dir
+result
