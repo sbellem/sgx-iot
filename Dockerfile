@@ -92,12 +92,46 @@ RUN set -eux; \
                 libsgx-urts; \
     rm -rf /var/lib/apt/lists/*;
 
-RUN pip install cryptography ipython requests pyyaml ipdb blessings colorama
+# install nix
+ARG UID=1000
+ARG GID=1000
+
+RUN apt-get update && apt-get install --yes git curl wget sudo xz-utils
+RUN groupadd --gid $GID --non-unique photon \
+    && useradd --create-home --uid $UID --gid $GID --non-unique --shell /bin/bash photon \
+    && usermod --append --groups sudo photon \
+    && echo "photon ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/photon \
+    && mkdir -p /etc/nix \
+    && echo 'sandbox = false' > /etc/nix/nix.conf
+
+ENV USER photon
+USER photon
+
+WORKDIR /home/photon
+
+#COPY --chown=photon:photon ./nix.conf /home/photon/.config/nix/nix.conf
+
+RUN curl -L https://nixos.org/nix/install | sh
+
+RUN . /home/photon/.nix-profile/etc/profile.d/nix.sh && \
+  nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs && \
+  nix-channel --update && \
+  nix-env -iA cachix -f https://cachix.org/api/v1/install && \
+  cachix use initc3
+
+ENV NIX_PROFILES "/nix/var/nix/profiles/default /home/photon/.nix-profile"
+ENV NIX_PATH /home/photon/.nix-defexpr/channels
+ENV NIX_SSL_CERT_FILE /etc/ssl/certs/ca-certificates.crt
+ENV PATH /home/photon/.nix-profile/bin:$PATH
+
+RUN pip install --user cryptography ipython requests pyyaml ipdb blessings colorama
 RUN set -ex; \
     \
     cd /tmp; \
-    git clone --recurse-submodules https://github.com/sbellem/auditee.git; \
-    pip install auditee/
+    git clone --branch dev --recurse-submodules https://github.com/sbellem/auditee.git; \
+    pip install --user auditee/
+
+ENV PATH="/home/photon/.local/bin:${PATH}"
 
 ##############################################################################
 #                                                                            #
@@ -163,19 +197,21 @@ RUN make untrusted
 ##############################################################################
 FROM demo-base
 
-WORKDIR /usr/src/sgxiot
+RUN mkdir /home/photon/sgxiot
+WORKDIR /home/photon/sgxiot
 
-COPY common /usr/src/sgxiot/common
-COPY enclave /usr/src/sgxiot/enclave
-COPY interface /usr/src/sgxiot/interface
-COPY makefile /usr/src/sgxiot/makefile
-COPY nix /usr/src/sgxiot/nix
-COPY default.nix /usr/src/sgxiot/default.nix
-COPY .auditee.yml /usr/src/sgxiot/
-COPY nix.Dockerfile /usr/src/sgxiot/
+COPY --chown=photon:photon common common
+COPY --chown=photon:photon enclave enclave
+COPY --chown=photon:photon interface interface
+COPY --chown=photon:photon nix nix
+COPY --chown=photon:photon makefile \
+                           default.nix \
+                           .auditee.yml \
+                           nix.Dockerfile \
+                           run_demo_sgxra.sh \
+                           Sensor_Data \
+                           ./
 
-COPY Sensor_Data /usr/src/sgxiot/
-
-COPY --from=build-enclave /usr/src/result/bin/enclave.signed.so enclave/enclave.signed.so
-COPY --from=build-app /usr/src/sgxiot/app /usr/src/sgxiot/app
-COPY --from=initc3/linux-sgx:2.13.3-ubuntu20.04 /opt/sgxsdk /opt/sgxsdk
+COPY --from=build-enclave --chown=photon:photon /usr/src/result/bin/enclave.signed.so enclave/enclave.signed.so
+COPY --from=build-app --chown=photon:photon /usr/src/sgxiot/app app
+COPY --from=initc3/linux-sgx:2.13.3-ubuntu20.04 --chown=photon:photon /opt/sgxsdk /opt/sgxsdk

@@ -1,6 +1,7 @@
 import base64
 import json
 import os
+import pathlib
 import sys
 import time
 
@@ -14,6 +15,11 @@ from cryptography.hazmat.primitives import hashes, serialization
 
 init_colorama()
 term = Terminal()
+
+SOURCE_CODE = pathlib.Path("/home/photon/sgxiot")
+SIGNED_ENCLAVE = SOURCE_CODE.joinpath("enclave", "enclave.signed.so")
+DEMO_DIR = SOURCE_CODE.joinpath("demo_sgx")
+IAS_REPORT = SOURCE_CODE.joinpath("demo_sgx/ias_report.json")
 
 
 def little2big_endian(b):
@@ -31,7 +37,7 @@ def swap_endians(b, *, length=32, from_byteorder="little", to_byteorder="big"):
 ##############################################################################
 print(f"{term.bold}Reading quote from file ...{term.normal}")
 time.sleep(4)
-with open("demo_sgx/quote.bin", "rb") as f:
+with open(DEMO_DIR.joinpath("quote.bin"), "rb") as f:
     quote_bytes = f.read()
 
 quote_b64 = base64.b64encode(quote_bytes)
@@ -72,7 +78,7 @@ time.sleep(5)
 
 ias_report = {"body": res.json(), "headers": dict(res.headers)}
 
-with open("demo_sgx/ias_report.json", "w") as f:
+with open(DEMO_DIR.joinpath("ias_report.json"), "w") as f:
     json.dump(ias_report, f)
 
 ##############################################################################
@@ -85,11 +91,7 @@ print(
 )
 time.sleep(4)
 
-match = auditee.verify_mrenclave(
-    "/usr/src/sgxiot/",
-    "/usr/src/sgxiot/enclave/enclave.signed.so",
-    ias_report="/usr/src/sgxiot/demo_sgx/ias_report.json",
-)
+match = auditee.verify_mrenclave(SOURCE_CODE, SIGNED_ENCLAVE, ias_report=IAS_REPORT,)
 
 if not match:
     sys.exit(
@@ -127,10 +129,10 @@ time.sleep(4)
 #                          Verify Signature                                  #
 #                                                                            #
 ##############################################################################
-with open("demo_sgx/Sensor_Data.signature", "rb") as f:
+with open(DEMO_DIR.joinpath("Sensor_Data.signature"), "rb") as f:
     signature = f.read()
 
-with open("Sensor_Data") as f:
+with open(SOURCE_CODE.joinpath("Sensor_Data")) as f:
     sensor_data = f.read()
 
 print(
