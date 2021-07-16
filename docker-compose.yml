@@ -35,15 +35,15 @@ services:
       SGX_DEBUG: 1
     volumes:
       - aesmd-socket:/var/run/aesmd
-      - ./common:/home/photon/sgxiot/common
-      - ./demo_sgx:/home/photon/sgxiot/demo_sgx
-      - ./.auditee.yml:/home/photon/sgxiot/.auditee.yml
-      - ./default.nix:/home/photon/sgxiot/default.nix
-      - ./makefile:/home/photon/sgxiot/makefile
-      - ./verify.py:/home/photon/sgxiot/verify.py
-      - ./run_keygen.sh:/home/photon/sgxiot/run_keygen.sh
-      - ./run_quote.sh:/home/photon/sgxiot/run_quote.sh
-      - ./run_demo_sgxra.sh:/home/photon/sgxiot/run_demo_sgxra.sh
+      #- ./common:/home/photon/sgxiot/common
+      #- ./demo_sgx:/home/photon/sgxiot/demo_sgx
+      #- ./.auditee.yml:/home/photon/sgxiot/.auditee.yml
+      #- ./default.nix:/home/photon/sgxiot/default.nix
+      #- ./makefile:/home/photon/sgxiot/makefile
+      #- ./verify.py:/home/photon/sgxiot/verify.py
+      #- ./run_keygen.sh:/home/photon/sgxiot/run_keygen.sh
+      #- ./run_quote.sh:/home/photon/sgxiot/run_quote.sh
+      #- ./run_demo_sgxra.sh:/home/photon/sgxiot/run_demo_sgxra.sh
       - /var/run/docker.sock:/var/run/docker.sock
     command: ./run_demo_sgxra.sh
 

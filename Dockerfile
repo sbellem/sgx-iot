@@ -204,12 +204,13 @@ COPY --chown=photon:photon common common
 COPY --chown=photon:photon enclave enclave
 COPY --chown=photon:photon interface interface
 COPY --chown=photon:photon nix nix
-COPY --chown=photon:photon makefile \
+COPY --chown=photon:photon .auditee.yml \
                            default.nix \
-                           .auditee.yml \
+                           makefile \
                            nix.Dockerfile \
                            run_demo_sgxra.sh \
                            Sensor_Data \
+                           verify.py \
                            ./
 
 COPY --from=build-enclave --chown=photon:photon /usr/src/result/bin/enclave.signed.so enclave/enclave.signed.so
