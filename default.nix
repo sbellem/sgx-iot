@@ -19,7 +19,7 @@ pkgs.stdenv.mkDerivation {
     sha256 = "0xcvbmmjlznw9bnizrd3cq85kixa5n3qkbc5dvi1xcyr6xc6ipwl";
   };
   preConfigure = ''
-    export SGX_SDK=${sgx.sgxsdk}/sgxsdk
+    export SGX_SDK=${sgx.sgx-sdk}/sgxsdk
     export PATH=$PATH:$SGX_SDK/bin:$SGX_SDK/bin/x64
     export PKG_CONFIG_PATH=$SGX_SDK/pkgconfig
     export LD_LIBRARY_PATH=$SGX_SDK/sdk_libs
@@ -28,7 +28,7 @@ pkgs.stdenv.mkDerivation {
     '';
   #configureFlags = ["--with-sgxsdk=$SGX_SDK"];
   buildInputs = with pkgs; [
-    sgx.sgxsdk
+    sgx.sgx-sdk
     unixtools.xxd
     bashInteractive
     autoconf

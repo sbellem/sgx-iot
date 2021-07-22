@@ -3,7 +3,6 @@
 #                            Demo base                                       #
 #                                                                            #
 ##############################################################################
-#FROM initc3/linux-sgx:2.13.3-ubuntu20.04 AS demo-base
 FROM ubuntu:20.04 AS demo-base
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -117,7 +116,8 @@ RUN . /home/photon/.nix-profile/etc/profile.d/nix.sh && \
   nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs && \
   nix-channel --update && \
   nix-env -iA cachix -f https://cachix.org/api/v1/install && \
-  cachix use initc3
+  cachix use sgx
+  #cachix use initc3
 
 ENV NIX_PROFILES "/nix/var/nix/profiles/default /home/photon/.nix-profile"
 ENV NIX_PATH /home/photon/.nix-defexpr/channels
@@ -152,7 +152,8 @@ COPY default.nix /usr/src/default.nix
 
 # install cachix, to fetch prebuilt sgxsdk from cache
 RUN nix-env -iA cachix -f https://cachix.org/api/v1/install
-RUN /nix/store/*cachix*/bin/cachix use initc3
+#RUN /nix/store/*cachix*/bin/cachix use initc3
+RUN /nix/store/*cachix*/bin/cachix use sgx
 
 RUN nix-build
 
@@ -161,7 +162,7 @@ RUN nix-build
 #                            Build app (untrusted)                           #
 #                                                                            #
 ##############################################################################
-FROM initc3/linux-sgx:2.13.3-ubuntu20.04 AS build-app
+FROM initc3/linux-sgx:2.14-ubuntu20.04 AS build-app
 
 RUN apt-get update && apt-get install -y \
                 autotools-dev \
@@ -215,4 +216,4 @@ COPY --chown=photon:photon .auditee.yml \
 
 COPY --from=build-enclave --chown=photon:photon /usr/src/result/bin/enclave.signed.so enclave/enclave.signed.so
 COPY --from=build-app --chown=photon:photon /usr/src/sgxiot/app app
-COPY --from=initc3/linux-sgx:2.13.3-ubuntu20.04 --chown=photon:photon /opt/sgxsdk /opt/sgxsdk
+COPY --from=initc3/linux-sgx:2.14-ubuntu20.04 --chown=photon:photon /opt/sgxsdk /opt/sgxsdk
