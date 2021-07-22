@@ -24,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "sgx": {
-        "branch": "main",
+        "branch": "v2.14a0",
         "description": "Nix derivations for linux-sgx",
         "homepage": null,
-        "owner": "initc3",
+        "owner": "sbellem",
         "repo": "nix-linux-sgx",
-        "rev": "71b98d9b54c70c04c1ccbb484aa34f5dd00ae238",
-        "sha256": "138jf0dbkgj7wi4ayj52fgg8kbd91ikg9dn2ik3x9qi7ds80nlv5",
+        "rev": "e127597e7183127fc8938721a3c51ef4dac190f5",
+        "sha256": "0r9frl6hm7vwgphmrbc2izsfymvs171z3jm0gj5n0rsi95w1fsrh",
         "type": "tarball",
-        "url": "https://github.com/initc3/nix-linux-sgx/archive/71b98d9b54c70c04c1ccbb484aa34f5dd00ae238.tar.gz",
+        "url": "https://github.com/sbellem/nix-linux-sgx/archive/e127597e7183127fc8938721a3c51ef4dac190f5.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
