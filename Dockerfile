@@ -116,8 +116,7 @@ RUN . /home/photon/.nix-profile/etc/profile.d/nix.sh && \
   nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs && \
   nix-channel --update && \
   nix-env -iA cachix -f https://cachix.org/api/v1/install && \
-  cachix use sgx
-  #cachix use initc3
+  cachix use initc3
 
 ENV NIX_PROFILES "/nix/var/nix/profiles/default /home/photon/.nix-profile"
 ENV NIX_PATH /home/photon/.nix-defexpr/channels
@@ -152,8 +151,7 @@ COPY default.nix /usr/src/default.nix
 
 # install cachix, to fetch prebuilt sgxsdk from cache
 RUN nix-env -iA cachix -f https://cachix.org/api/v1/install
-#RUN /nix/store/*cachix*/bin/cachix use initc3
-RUN /nix/store/*cachix*/bin/cachix use sgx
+RUN /nix/store/*cachix*/bin/cachix use initc3
 
 RUN nix-build
 
