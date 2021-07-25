@@ -127,7 +127,7 @@ RUN pip install --user cryptography ipython requests pyyaml ipdb blessings color
 RUN set -ex; \
     \
     cd /tmp; \
-    git clone --branch dev --recurse-submodules https://github.com/sbellem/auditee.git; \
+    git clone --recurse-submodules https://github.com/sbellem/auditee.git; \
     pip install --user auditee/
 
 ENV PATH="/home/photon/.local/bin:${PATH}"
