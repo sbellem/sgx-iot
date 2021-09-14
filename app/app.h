@@ -34,10 +34,10 @@ extern void *quote_buffer;
 extern size_t quote_buffer_size;
 extern void *signature_buffer;
 extern size_t signature_buffer_size;
+extern void *sealed_signature_buffer;
+extern size_t sealed_signature_buffer_size;
 extern void *input_buffer;
 extern size_t input_buffer_size;
-extern void *quote_buffer;
-extern size_t quote_buffer_size;
 
 /* Function prototypes */
 
@@ -56,26 +56,31 @@ bool read_file_into_memory(const char *const filename, void **buffer,
 
 bool load_enclave_state(const char *const statefile);
 
-bool load_sealed_data(const char *const sealed_data_file, void *buffer,
-                      size_t buffer_size);
+bool load_sealed_data(const char *const sealed_data_file, void **buffer,
+                      size_t *buffer_size);
 
 bool load_sealedprivkey(const char *const sealedprivkey_file);
 
 bool load_sealedpubkey(const char *const sealedpubkey_file);
 
+bool load_sealedsignature(const char *const sealedsignature_file);
+
 bool load_input_file(const char *const input_file);
 
 bool enclave_sign_data(void);
 
+bool enclave_verify_signature(void);
+
 bool enclave_generate_key(void);
 
 bool enclave_generate_quote(sgx_report_data_t report_data);
-bool enclave_gen_quote();
+bool enclave_gen_quote(void);
 
 // bool save_enclave_state(const char *const statefile);
 bool save_enclave_state(const char *const sealedprivkey_file,
                         const char *const sealedpubkey_file);
 bool save_state(const char *const statefile, void *buffer, size_t buffer_size);
+bool seal_signature_and_save(const char *const sealedsignature_file);
 
 BIGNUM *bignum_from_little_endian_bytes_32(const unsigned char *const bytes);
 

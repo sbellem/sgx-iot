@@ -23,6 +23,7 @@
  * key.
  * @param esignature_size         Output parameter for size of signature.
  *
+ * @param esealedsignature_size   Output parameter for size of sealed signature
  * @return                        SGX_SUCCESS (Error code = 0x0000) on success,
  * some other appropriate sgx_status_t value upon failure.
  */
@@ -30,14 +31,17 @@
 sgx_status_t ecall_calc_buffer_sizes(size_t *epubkey_size,
                                      size_t *esealedpubkey_size,
                                      size_t *esealedprivkey_size,
-                                     size_t *esignature_size) {
+                                     size_t *esignature_size,
+                                     size_t *esealedsignature_size) {
   *epubkey_size = sizeof(sgx_ec256_public_t);
   *esealedpubkey_size =
       sgx_calc_sealed_data_size(0U, sizeof(sgx_ec256_public_t));
   *esealedprivkey_size =
       sgx_calc_sealed_data_size(0U, sizeof(sgx_ec256_private_t));
   *esignature_size = sizeof(sgx_ec256_signature_t);
-  print("\nTrustedApp: Sizes for sealed public key, sealed private key and "
-        "signature calculated successfully.\n");
+  *esealedsignature_size =
+      sgx_calc_sealed_data_size(0U, sizeof(sgx_ec256_signature_t));
+  print("\nTrustedApp: Sizes for sealed public key, sealed private key, "
+        "signature, and sealed signature calculated successfully.\n");
   return SGX_SUCCESS;
 }

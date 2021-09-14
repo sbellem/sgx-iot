@@ -23,7 +23,7 @@ bool enclave_get_buffer_sizes() {
   sgx_lasterr = ecall_calc_buffer_sizes(
       enclave_id, &ecall_retval, &public_key_buffer_size,
       &sealed_pubkey_buffer_size, &sealed_privkey_buffer_size,
-      &signature_buffer_size);
+      &signature_buffer_size, &sealed_signature_buffer_size);
   if (sgx_lasterr == SGX_SUCCESS && (ecall_retval != 0)) {
     fprintf(stderr,
             "[GatewayApp]: ERROR: ecall_calc_buffer_sizes returned %d\n",
