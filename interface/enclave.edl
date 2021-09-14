@@ -26,7 +26,8 @@ enclave
             [out] size_t* epubkey_size,
             [out] size_t* esealedpubkey_size,
             [out] size_t* esealedprivkey_size,
-            [out] size_t* esignature_size);
+            [out] size_t* esignature_size,
+            [out] size_t* esealedsignature_size);
 
         public sgx_status_t ecall_unseal_and_sign(
             [in, size=msg_size] uint8_t * msg,
@@ -48,6 +49,21 @@ enclave
             [out] sgx_report_t *report,
             [in] sgx_target_info_t *target_info,
             sgx_report_data_t report_data);
+        
+        public sgx_status_t ecall_seal_signature(
+            [out, size=sealed_signature_size] char *sealed_signature,
+            size_t sealed_signature_size, 
+            [in, size=signature_size] char *signature,
+            size_t signature_size);
+            
+        public sgx_status_t ecall_unseal_and_verify(
+            [in, size=msg_size]uint8_t *msg, 
+            uint32_t msg_size,
+            [in, size=pubkey_size] char *pubkey, 
+            size_t pubkey_size,
+            [in, size=signature_size]char *signature, 
+            size_t signature_size,
+            [out, size=1] uint8_t *result);
     };
 
     untrusted

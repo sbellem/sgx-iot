@@ -8,8 +8,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <enclave_t.h>
 #include "enclave.h"
+#include <enclave_t.h>
 
 #include <sgx_tcrypto.h>
 #include <sgx_tseal.h>
@@ -43,7 +43,7 @@ sgx_status_t ecall_unseal_and_sign(uint8_t *msg, uint32_t msg_size,
     uint32_t unsealed_data_size =
         sgx_get_encrypt_txt_len((const sgx_sealed_data_t *)sealed);
     uint8_t *const unsealed_data =
-        (uint8_t *)malloc(unsealed_data_size);  // Check malloc return;
+        (uint8_t *)malloc(unsealed_data_size); // Check malloc return;
     if (unsealed_data == NULL) {
         print("\nTrustedApp: malloc(unsealed_data_size) failed !\n");
         goto cleanup;
@@ -72,9 +72,8 @@ sgx_status_t ecall_unseal_and_sign(uint8_t *msg, uint32_t msg_size,
         goto cleanup;
     }
 
-    print(
-        "\nTrustedApp: Unsealed the sealed private key, signed sensor data "
-        "with this private key and then, sent the signature back.\n");
+    print("\nTrustedApp: Unsealed the sealed private key, signed sensor data "
+          "with this private key and then, sent the signature back.\n");
 
     ret = SGX_SUCCESS;
 
@@ -86,6 +85,26 @@ cleanup:
     if (unsealed_data != NULL) {
         memset_s(unsealed_data, unsealed_data_size, 0, unsealed_data_size);
         free(unsealed_data);
+    }
+
+    return ret;
+}
+
+sgx_status_t ecall_seal_signature(char *sealed_signature,
+                                  size_t sealed_signature_size, char *signature,
+                                  size_t signature_size) {
+    sgx_status_t ret = SGX_ERROR_UNEXPECTED;
+    print("\nTrustedApp: Sealing signature.\n");
+
+    // Step 1: calculate sealed signature size and seal signature
+    if (sealed_signature_size >=
+        sgx_calc_sealed_data_size(0U, sizeof(sgx_ec256_signature_t))) {
+        if ((ret = sgx_seal_data(
+                 0U, NULL, (uint32_t)signature_size, (uint8_t *)signature,
+                 (uint32_t)sealed_signature_size,
+                 (sgx_sealed_data_t *)sealed_signature)) != SGX_SUCCESS) {
+            print("\nTrustedApp: sgx_seal_data() failed !\n");
+        }
     }
 
     return ret;

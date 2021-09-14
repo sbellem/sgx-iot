@@ -21,6 +21,8 @@ void *sealed_privkey_buffer;
 size_t sealed_privkey_buffer_size;
 void *signature_buffer;
 size_t signature_buffer_size;
+void *sealed_signature_buffer;
+size_t sealed_signature_buffer_size;
 void *input_buffer;
 size_t input_buffer_size;
 void *quote_buffer;

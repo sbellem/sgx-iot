@@ -15,9 +15,11 @@ bool allocate_buffers() {
     public_key_buffer = calloc(public_key_buffer_size, 1);
     sealed_pubkey_buffer = calloc(sealed_pubkey_buffer_size, 1);
     signature_buffer = calloc(signature_buffer_size, 1);
+    sealed_signature_buffer = calloc(sealed_signature_buffer_size, 1);
 
     if (sealed_privkey_buffer == NULL || sealed_pubkey_buffer == NULL ||
-        signature_buffer == NULL || public_key_buffer == NULL) {
+        signature_buffer == NULL || public_key_buffer == NULL ||
+        sealed_signature_buffer == NULL) {
         fprintf(stderr,
                 "[GatewayApp]: allocate_buffers() memory allocation failure\n");
         sgx_lasterr = SGX_ERROR_UNEXPECTED;
@@ -49,6 +51,11 @@ void cleanup_buffers() {
         signature_buffer = NULL;
     }
 
+    if (sealed_signature_buffer != NULL) {
+        free(sealed_signature_buffer);
+        sealed_signature_buffer = NULL;
+    }
+
     if (quote_buffer != NULL) {
         free(quote_buffer);
         quote_buffer = NULL;
@@ -59,4 +66,3 @@ void cleanup_buffers() {
         input_buffer = NULL;
     }
 }
-
