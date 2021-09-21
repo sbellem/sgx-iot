@@ -20,7 +20,7 @@
 extern "C" {
 #endif
 
-void print(const char*);
+void print(const char *);
 
 #if defined(__cplusplus)
 }
