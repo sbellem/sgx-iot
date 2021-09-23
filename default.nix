@@ -1,7 +1,7 @@
 let
   sources = import ./nix/sources.nix;
   pkgs = import sources.nixpkgs { };
-  sgx = import sources.sgx;
+  sgx = import sources.sgxarcz { };
 in
 pkgs.stdenv.mkDerivation {
   name = "sgx-iot";

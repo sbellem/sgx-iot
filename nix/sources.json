@@ -34,5 +34,17 @@
         "type": "tarball",
         "url": "https://github.com/initc3/nix-linux-sgx/archive/5d81f7ec7fb8bae0e2b0af34aac0d479cc68e751.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "sgxarcz": {
+        "branch": "master",
+        "description": "Nix Packages collection",
+        "homepage": null,
+        "owner": "sbellem",
+        "repo": "nixpkgs",
+        "rev": "374de772e1a55362d41102a6b96f4fe5f04360b3",
+        "sha256": "07n66zfpk82bf049sik9dr2rgw8y2lrb2bx3wg7s1hx1gwqvn9qi",
+        "type": "tarball",
+        "url": "https://github.com/sbellem/nixpkgs/archive/374de772e1a55362d41102a6b96f4fe5f04360b3.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
