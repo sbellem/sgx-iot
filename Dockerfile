@@ -152,6 +152,7 @@ COPY default.nix /usr/src/default.nix
 # install cachix, to fetch prebuilt sgxsdk from cache
 RUN nix-env -iA cachix -f https://cachix.org/api/v1/install
 RUN /nix/store/*cachix*/bin/cachix use initc3
+RUN /nix/store/*cachix*/bin/cachix use gluonixpkgs
 
 RUN nix-build
 
