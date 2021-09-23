@@ -13,10 +13,10 @@ pkgs.stdenv.mkDerivation {
   src = pkgs.fetchFromGitHub {
     owner = "sbellem";
     repo = "sgx-iot";
-    rev = "9d157b766483ef3df2d355875e0d43b9040188a0";
+    rev = "78ff964ec2aed99162b172df4df2a794362312dd";
     # Command to get the sha256 hash (note the --fetch-submodules arg):
-    # nix run -f '<nixpkgs>' nix-prefetch-github -c nix-prefetch-github --rev 9d157b766483ef3df2d355875e0d43b9040188a0 sbellem sgx-iot
-    sha256 = "1w00mfz8y1frfriir5h7r8d0vqvz0pdffm33h8342iggwnzyb3k3";
+    # nix run -f '<nixpkgs>' nix-prefetch-github -c nix-prefetch-github --rev 78ff964ec2aed99162b172df4df2a794362312dd sbellem sgx-iot
+    sha256 = "06v3x6w62hv1v9b2ygm4p71nayj40h0lvc4xi561p6iw21az423z";
   };
   preConfigure = ''
     export SGX_SDK=${sgx.sgx-sdk}/sgxsdk
