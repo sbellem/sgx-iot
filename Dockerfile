@@ -116,7 +116,8 @@ RUN . /home/photon/.nix-profile/etc/profile.d/nix.sh && \
   nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs && \
   nix-channel --update && \
   nix-env -iA cachix -f https://cachix.org/api/v1/install && \
-  cachix use initc3
+  cachix use initc3 && \
+  cachix use gluonixpkgs
 
 ENV NIX_PROFILES "/nix/var/nix/profiles/default /home/photon/.nix-profile"
 ENV NIX_PATH /home/photon/.nix-defexpr/channels
