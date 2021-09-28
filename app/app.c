@@ -81,96 +81,96 @@ int main(int argc, char **argv) {
       break;
     }
   }
-}
 
-if (optind < argc) {
-  opt_input_file = argv[optind++];
-}
+  if (optind < argc) {
+    opt_input_file = argv[optind++];
+  }
 
-if (!opt_keygen && !opt_sign && !opt_quote && !opt_verify) {
-  fprintf(stderr, "Error: Must specifiy either --keygen or --sign or "
-                  "--quotegen or --verify\n");
-  return EXIT_FAILURE;
-}
+  if (!opt_keygen && !opt_sign && !opt_quote && !opt_verify) {
+    fprintf(stderr, "Error: Must specifiy either --keygen or --sign or "
+                    "--quotegen or --verify\n");
+    return EXIT_FAILURE;
+  }
 
-if (opt_keygen && (!opt_enclave_path || !opt_sealedprivkey_file ||
-                   !opt_sealedprivkey_file || !opt_public_key_file)) {
-  fprintf(stderr, "Usage:\n");
-  fprintf(stderr,
-          "  %s --keygen --enclave-path /path/to/enclave.signed.so "
-          "--sealedprivkey sealedprivkey.bin "
-          "--sealedpubkey sealedpubkey.bin "
-          "--public-key mykey.pem\n",
-          argv[0]);
-  return EXIT_FAILURE;
-}
+  if (opt_keygen && (!opt_enclave_path || !opt_sealedprivkey_file ||
+                     !opt_sealedprivkey_file || !opt_public_key_file)) {
+    fprintf(stderr, "Usage:\n");
+    fprintf(stderr,
+            "  %s --keygen --enclave-path /path/to/enclave.signed.so "
+            "--sealedprivkey sealedprivkey.bin "
+            "--sealedpubkey sealedpubkey.bin "
+            "--public-key mykey.pem\n",
+            argv[0]);
+    return EXIT_FAILURE;
+  }
 
-if (opt_quote &&
-    (!opt_enclave_path || !opt_sealedpubkey_file || !opt_quote_file)) {
-  fprintf(stderr, "Usage:\n");
-  fprintf(stderr,
-          "  %s --quotegen --enclave-path /path/to/enclave.signed.so "
-          "--sealedpubkey sealedpubkey.bin --quotefile quote.json\n",
-          argv[0]);
-  return EXIT_FAILURE;
-}
+  if (opt_quote &&
+      (!opt_enclave_path || !opt_sealedpubkey_file || !opt_quote_file)) {
+    fprintf(stderr, "Usage:\n");
+    fprintf(stderr,
+            "  %s --quotegen --enclave-path /path/to/enclave.signed.so "
+            "--sealedpubkey sealedpubkey.bin --quotefile quote.json\n",
+            argv[0]);
+    return EXIT_FAILURE;
+  }
 
-if (opt_sign &&
-    (!opt_enclave_path || !opt_sealedprivkey_file || !opt_signature_file ||
-     !opt_input_file || !opt_sealedsignature_file)) {
-  fprintf(stderr, "Usage:\n");
-  fprintf(stderr,
-          "  %s --sign --enclave-path /path/to/enclave.signed.so "
-          "--sealedprivkey "
-          "sealeddata.bin --signature inputfile.signature inputfile\n",
-          argv[0]);
-  return EXIT_FAILURE;
-}
+  if (opt_sign &&
+      (!opt_enclave_path || !opt_sealedprivkey_file || !opt_signature_file ||
+       !opt_input_file || !opt_sealedsignature_file)) {
+    fprintf(stderr, "Usage:\n");
+    fprintf(stderr,
+            "  %s --sign --enclave-path /path/to/enclave.signed.so "
+            "--sealedprivkey "
+            "sealeddata.bin --signature inputfile.signature inputfile\n",
+            argv[0]);
+    return EXIT_FAILURE;
+  }
 
-if (opt_verify && (!opt_enclave_path || !opt_sealedpubkey_file ||
-                   !opt_input_file || !opt_sealedsignature_file)) {
-  fprintf(stderr, "Usage:\n");
-  fprintf(stderr,
-          "  %s --verify --enclave-path /path/to/enclave.signed.so "
-          "--sealedpubkey sealeddata.bin --sealedsignature "
-          "sealedsignature.bin inputfile"
-          "inputfile\n",
-          argv[0]);
-}
+  if (opt_verify && (!opt_enclave_path || !opt_sealedpubkey_file ||
+                     !opt_input_file || !opt_sealedsignature_file)) {
+    fprintf(stderr, "Usage:\n");
+    fprintf(stderr,
+            "  %s --verify --enclave-path /path/to/enclave.signed.so "
+            "--sealedpubkey sealeddata.bin --sealedsignature "
+            "sealedsignature.bin inputfile"
+            "inputfile\n",
+            argv[0]);
+  }
 
-OpenSSL_add_all_algorithms(); /* Init OpenSSL lib */
+  OpenSSL_add_all_algorithms(); /* Init OpenSSL lib */
 
-bool success_status =
-    create_enclave(opt_enclave_path) && enclave_get_buffer_sizes() &&
-    allocate_buffers() && (opt_keygen ? enclave_generate_key() : true) &&
-    (opt_keygen
-         ? save_enclave_state(opt_sealedprivkey_file, opt_sealedpubkey_file)
-         : true) &&
-    // quote
-    (opt_quote ? load_sealedpubkey(opt_sealedpubkey_file) : true) &&
-    (opt_quote ? enclave_gen_quote() : true) &&
-    (opt_quote ? save_quote(opt_quote_file) : true) &&
-    //(opt_quote ? save_public_key(opt_public_key_file) : true) &&
-    // sign
-    (opt_sign ? load_enclave_state(opt_sealedprivkey_file) : true) &&
-    (opt_sign ? load_input_file(opt_input_file) : true) &&
-    (opt_sign ? enclave_sign_data() : true) &&
-    // save_enclave_state(opt_sealedprivkey_file) &&
-    (opt_sign ? save_signature(opt_signature_file) : true) &&
-    (opt_sign ? seal_signature_and_save(opt_sealedsignature_file) : true) &&
-    (opt_verify ? load_sealedpubkey(opt_sealedpubkey_file) : true) &&
-    (opt_verify ? load_sealedsignature(opt_sealedsignature_file) : true) &&
-    (opt_verify ? load_input_file(opt_input_file) : true) &&
-    (opt_verify ? enclave_verify_signature() : true);
-// TODO call function to generate report with public key in it
-//(opt_keygen ? enclave_generate_quote() : true);
+  bool success_status =
+      create_enclave(opt_enclave_path) && enclave_get_buffer_sizes() &&
+      allocate_buffers() && (opt_keygen ? enclave_generate_key() : true) &&
+      (opt_keygen
+           ? save_enclave_state(opt_sealedprivkey_file, opt_sealedpubkey_file)
+           : true) &&
+      // quote
+      (opt_quote ? load_sealedpubkey(opt_sealedpubkey_file) : true) &&
+      (opt_quote ? enclave_gen_quote() : true) &&
+      (opt_quote ? save_quote(opt_quote_file) : true) &&
+      //(opt_quote ? save_public_key(opt_public_key_file) : true) &&
+      // sign
+      (opt_sign ? load_enclave_state(opt_sealedprivkey_file) : true) &&
+      (opt_sign ? load_input_file(opt_input_file) : true) &&
+      (opt_sign ? enclave_sign_data() : true) &&
+      // save_enclave_state(opt_sealedprivkey_file) &&
+      (opt_sign ? save_signature(opt_signature_file) : true) &&
+      (opt_sign ? seal_signature_and_save(opt_sealedsignature_file) : true) &&
+      (opt_verify ? load_sealedpubkey(opt_sealedpubkey_file) : true) &&
+      (opt_verify ? load_sealedsignature(opt_sealedsignature_file) : true) &&
+      (opt_verify ? load_input_file(opt_input_file) : true) &&
+      (opt_verify ? enclave_verify_signature() : true);
+  // TODO call function to generate report with public key in it
+  //(opt_keygen ? enclave_generate_quote() : true);
 
-if (sgx_lasterr != SGX_SUCCESS) {
-  fprintf(stderr, "[GatewayApp]: ERROR: %s\n", decode_sgx_status(sgx_lasterr));
-}
+  if (sgx_lasterr != SGX_SUCCESS) {
+    fprintf(stderr, "[GatewayApp]: ERROR: %s\n",
+            decode_sgx_status(sgx_lasterr));
+  }
 
-destroy_enclave();
-cleanup_buffers();
+  destroy_enclave();
+  cleanup_buffers();
 
-return success_status ? EXIT_SUCCESS : EXIT_FAILURE;
+  return success_status ? EXIT_SUCCESS : EXIT_FAILURE;
 }
