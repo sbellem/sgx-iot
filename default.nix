@@ -11,12 +11,12 @@ pkgs.stdenv.mkDerivation {
   # NOTE The commit (rev) cannot include this file, and therefore will, at the very
   # best, be one commit behind the commit including this file.
   src = pkgs.fetchFromGitHub {
-    owner = "sbellem";
+    owner = "michael-yxchen";
     repo = "sgx-iot";
-    rev = "5a90f6d7927ba567a9e3c28a22a6fa0e202bc1a5";
+    rev = "b7680da3ceb27399d6ea1d00aa03717e94360033";
     # Command to get the sha256 hash:
     # nix run -f '<nixpkgs>' nix-prefetch-github -c nix-prefetch-github --rev 5a90f6d7927ba567a9e3c28a22a6fa0e202bc1a5 sbellem sgx-iot
-    sha256 = "0rmiz08s1d27w1zfrnnkhpy7lh88hvbxqflp51030fp6mnkas65f";
+    sha256 = "09qcsnjrai2p7mii29i4i7cdv87hl1zsv0bzk5jf38r7h999f23a";
   };
   preConfigure = ''
     export SGX_SDK=${sgx.sgx-sdk}/sgxsdk
