@@ -56,7 +56,7 @@ sgx_status_t ecall_unseal_and_quote(sgx_report_t *report,
   memcpy((uint8_t *)public_key, unsealed_data, unsealed_data_size);
 
   sgx_report_data_t report_data = {{0}};
-  memcpy((uint8_t *const) & report_data, unsealed_data, unsealed_data_size);
+  memcpy((uint8_t *const)&report_data, unsealed_data, unsealed_data_size);
   // memcpy(&report_data, unsealed_data, unsealed_data_size);
 
   // BEGIN WIP --------------------------------------------
