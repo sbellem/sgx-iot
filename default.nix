@@ -14,7 +14,7 @@ pkgs.stdenv.mkDerivation {
     owner = "sbellem";
     repo = "sgx-iot";
     rev = "5a90f6d7927ba567a9e3c28a22a6fa0e202bc1a5";
-    # Command to get the sha256 hash (note the --fetch-submodules arg):
+    # Command to get the sha256 hash:
     # nix run -f '<nixpkgs>' nix-prefetch-github -c nix-prefetch-github --rev 5a90f6d7927ba567a9e3c28a22a6fa0e202bc1a5 sbellem sgx-iot
     sha256 = "0rmiz08s1d27w1zfrnnkhpy7lh88hvbxqflp51030fp6mnkas65f";
   };
