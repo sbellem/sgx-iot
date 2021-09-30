@@ -36,8 +36,17 @@ echo "\nSigning sensor data:"
 ../app/app --sign \
     --enclave-path `pwd`/../enclave/enclave.signed.so \
     --sealedprivkey sealedprivkey.bin \
-    --signature Sensor_Data.signature ../Sensor_Data
+    --signature Sensor_Data.signature \
+    --sealedsignature sealedsignature.bin ../Sensor_Data
 echo "Sensor data signed.\n"
+
+echo "\nVerifying sensor data from enclave:"
+../app/app --verify\
+    --enclave-path `pwd`/../enclave/enclave.signed.so \
+    --sealedsignature sealedsignature.bin \
+    --sealedpubkey sealedpubkey.bin \
+    ../Sensor_Data 
+echo "Sensor data verified inside enclave.\n"
 
 echo "\nVerifying quote and signature:"
 cd ..

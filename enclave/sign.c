@@ -88,3 +88,23 @@ cleanup:
 
   return ret;
 }
+
+sgx_status_t ecall_seal_signature(char *sealed_signature,
+                                  size_t sealed_signature_size, char *signature,
+                                  size_t signature_size) {
+  sgx_status_t ret = SGX_ERROR_UNEXPECTED;
+  print("\nTrustedApp: Sealing signature.\n");
+
+  // Step 1: calculate sealed signature size and seal signature
+  if (sealed_signature_size >=
+      sgx_calc_sealed_data_size(0U, sizeof(sgx_ec256_signature_t))) {
+    if ((ret = sgx_seal_data(
+             0U, NULL, (uint32_t)signature_size, (uint8_t *)signature,
+             (uint32_t)sealed_signature_size,
+             (sgx_sealed_data_t *)sealed_signature)) != SGX_SUCCESS) {
+      print("\nTrustedApp: sgx_seal_data() failed !\n");
+    }
+  }
+
+  return ret;
+}

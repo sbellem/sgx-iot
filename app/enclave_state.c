@@ -8,6 +8,7 @@
 #include <stdlib.h>
 
 #include "app.h"
+#include <enclave_u.h>
 
 bool load_enclave_state(const char *const statefile) {
   void *new_buffer;
@@ -32,8 +33,8 @@ bool load_enclave_state(const char *const statefile) {
   return ret_status;
 }
 
-bool load_sealed_data(const char *const sealed_data_file, void *buffer,
-                      size_t buffer_size) {
+bool load_sealed_data(const char *const sealed_data_file, void **buffer,
+                      size_t *buffer_size) {
   void *new_buffer;
   size_t new_buffer_size;
 
@@ -42,14 +43,14 @@ bool load_sealed_data(const char *const sealed_data_file, void *buffer,
 
   /* If we previously allocated a buffer, free it before putting new one in
    * its place */
-  if (buffer != NULL) {
-    free(buffer);
-    buffer = NULL;
+  if (*buffer != NULL) {
+    free(*buffer);
+    *buffer = NULL;
   }
 
   /* Put new buffer into context */
-  buffer = new_buffer;
-  buffer_size = new_buffer_size;
+  *buffer = new_buffer;
+  *buffer_size = new_buffer_size;
 
   return ret_status;
 }
@@ -78,6 +79,52 @@ bool load_sealedpubkey(const char *const sealedpubkey_file) {
   sealed_pubkey_buffer_size = new_buffer_size;
 
   return ret_status;
+}
+
+bool load_sealedsignature(const char *const sealedsignature_file) {
+  printf("[GatewayApp]: Loading sealed signature\n");
+  return load_sealed_data(sealedsignature_file, &sealed_signature_buffer,
+                          &sealed_signature_buffer_size);
+}
+
+/**
+ * @brief Seal the generated signature and save to a file
+ *
+ * @param sealedsignature_file Input parameter of the filename to save to
+ * @return success if true
+ */
+bool seal_signature_and_save(const char *const sealedsignature_file) {
+  sgx_status_t ecall_retval = SGX_ERROR_UNEXPECTED;
+  printf("[GatewayApp]: Calling enclave to seal signature\n");
+
+  sgx_lasterr = ecall_seal_signature(
+      enclave_id, &ecall_retval, sealed_signature_buffer,
+      sealed_signature_buffer_size, signature_buffer, signature_buffer_size);
+  if (sgx_lasterr == SGX_SUCCESS && (ecall_retval != SGX_SUCCESS)) {
+    fprintf(stderr, "[GatewayApp]: ERROR: ecall_seal_signature returned %d\n",
+            ecall_retval);
+    sgx_lasterr = SGX_ERROR_UNEXPECTED;
+  }
+
+  printf("[GatewayApp]: Saving enclave state - sealed signature\n");
+  FILE *file = open_file(sealedsignature_file, "wb");
+
+  bool ret_status = true;
+  if (file == NULL) {
+    fprintf(stderr, "[GatewayApp]: seal_signature_and_save() fopen failed\n");
+    sgx_lasterr = SGX_ERROR_UNEXPECTED;
+    return false;
+  }
+
+  if (fwrite(sealed_signature_buffer, sealed_signature_buffer_size, 1, file) !=
+      1) {
+    fprintf(stderr, "[GatewayApp]: Enclave state only partially written.\n");
+    sgx_lasterr = SGX_ERROR_UNEXPECTED;
+    ret_status = false;
+  }
+
+  fclose(file);
+  return ret_status && (sgx_lasterr == SGX_SUCCESS);
 }
 
 bool save_enclave_state(const char *const sealedprivkey_file,
