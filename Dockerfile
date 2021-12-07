@@ -113,10 +113,8 @@ WORKDIR /home/photon
 RUN curl -L https://nixos.org/nix/install | sh
 
 RUN . /home/photon/.nix-profile/etc/profile.d/nix.sh && \
-  nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs && \
-  nix-channel --update && \
-  nix-env -iA cachix -f https://cachix.org/api/v1/install && \
-  cachix use initc3
+  nix-channel --add https://nixos.org/channels/nixos-21.11 nixpkgs && \
+  nix-channel --update
 
 ENV NIX_PROFILES "/nix/var/nix/profiles/default /home/photon/.nix-profile"
 ENV NIX_PATH /home/photon/.nix-defexpr/channels
@@ -148,10 +146,6 @@ COPY makefile /usr/src/makefile
 
 COPY nix /usr/src/nix
 COPY default.nix /usr/src/default.nix
-
-# install cachix, to fetch prebuilt sgxsdk from cache
-RUN nix-env -iA cachix -f https://cachix.org/api/v1/install
-RUN /nix/store/*cachix*/bin/cachix use initc3
 
 RUN nix-build
 
