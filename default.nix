@@ -1,7 +1,6 @@
 let
   sources = import ./nix/sources.nix;
   pkgs = import sources.nixpkgs { };
-  sgx = import sources.sgx;
 in
 pkgs.stdenv.mkDerivation {
   name = "sgx-iot";
@@ -19,7 +18,7 @@ pkgs.stdenv.mkDerivation {
     sha256 = "0rmiz08s1d27w1zfrnnkhpy7lh88hvbxqflp51030fp6mnkas65f";
   };
   preConfigure = ''
-    export SGX_SDK=${sgx.sgx-sdk}/sgxsdk
+    export SGX_SDK=${pkgs.sgx-sdk}/sgxsdk
     export PATH=$PATH:$SGX_SDK/bin:$SGX_SDK/bin/x64
     export PKG_CONFIG_PATH=$SGX_SDK/pkgconfig
     export LD_LIBRARY_PATH=$SGX_SDK/sdk_libs
@@ -28,7 +27,7 @@ pkgs.stdenv.mkDerivation {
     '';
   #configureFlags = ["--with-sgxsdk=$SGX_SDK"];
   buildInputs = with pkgs; [
-    sgx.sgx-sdk
+    sgx-sdk
     unixtools.xxd
     bashInteractive
     autoconf
